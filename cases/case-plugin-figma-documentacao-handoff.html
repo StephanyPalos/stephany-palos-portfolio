@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Plugin Figma para Documentação e Handoff — Case Study por Stephany Palos, UX & Product Designer." />
+  <meta name="keywords" content="UX Case Study, Product Design, Stephany Palos, Figma Plugin, Design Ops, Handoff, Design System, Documentação, QA, Front-end" />
+  <meta name="author" content="Stephany Palos" />
+  <meta property="og:title" content="Plugin Figma para Documentação e Handoff — Case Study · Stephany Palos" />
+  <meta property="og:description" content="Iniciativa autoral para investigar como o Figma pode apoiar documentação, rastreabilidade e handoff entre design, front-end e QA." />
+  <meta property="og:type" content="article" />
+  <title>Plugin Figma para Documentação e Handoff — Case Study · Stephany Palos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS (espelhados do portfólio principal)
+    ============================================================ */
+    :root {
+      --color-pine: #1F2B24;
+      --color-moss: #55624B;
+      --color-charcoal: #121212;
+      --color-bone: #EEE7D6;
+      --color-ochre: #B6945A;
+      --color-sage: #A5B08F;
+      --color-mist-green: #D7DDCC;
+      --color-bark: #2B241F;
+      --color-moon-dust: #CFC5AF;
+
+      --bg-primary: #0E0E0C;
+      --bg-secondary: var(--color-pine);
+      --bg-surface: #171715;
+      --bg-card: #1C1C19;
+
+      --text-primary: var(--color-bone);
+      --text-secondary: var(--color-moon-dust);
+      --text-muted: rgba(238,231,214,0.55);
+
+      --border-primary: rgba(182,148,90,0.40);
+      --border-soft: rgba(238,231,214,0.09);
+
+      --accent: var(--color-ochre);
+
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-accent: 'Cormorant Garamond', serif;
+
+      --text-hero: clamp(2.4rem, 6vw, 4.8rem);
+      --text-h2: clamp(1.5rem, 3vw, 2.2rem);
+      --text-h3: clamp(1.1rem, 2vw, 1.4rem);
+      --text-body-lg: 1.125rem;
+      --text-body: 1rem;
+      --text-small: 0.875rem;
+      --text-caption: 0.75rem;
+
+      --lh-tight: 1.15;
+      --lh-body: 1.75;
+
+      --ls-display: 0.05em;
+      --ls-heading: 0.03em;
+      --ls-small: 0.13em;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-card: 0 16px 48px rgba(0,0,0,0.34);
+
+      --container: 760px;       /* body text column */
+      --container-wide: 1100px; /* media / full-bleed */
+      --container-max: 1260px;
+
+      --transition: 260ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: var(--lh-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-wrap: break-word;
+    }
+    ::selection { background: rgba(182,148,90,0.25); color: var(--color-bone); }
+    img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+    a { color: inherit; text-decoration: none; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 900;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .wrap        { width: 100%; max-width: var(--container);      margin: 0 auto; padding: 0 clamp(1.25rem,5vw,2.5rem); }
+    .wrap-wide   { width: 100%; max-width: var(--container-wide); margin: 0 auto; padding: 0 clamp(1.25rem,5vw,3rem); }
+    .wrap-full   { width: 100%; max-width: var(--container-max);  margin: 0 auto; padding: 0 clamp(1.25rem,5vw,5rem); }
+
+    .section     { padding: clamp(4rem,8vw,7rem) 0; }
+    .section-sm  { padding: clamp(2.5rem,5vw,4rem) 0; }
+
+    .label {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin: clamp(3rem,6vw,5rem) 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border-soft); }
+    .divider-icon { color: var(--accent); font-size: 0.7rem; flex-shrink: 0; }
+
+    /* ============================================================
+       PLACEHOLDER (hint boxes shown in template mode)
+    ============================================================ */
+    .ph {
+      border: 1.5px dashed rgba(182,148,90,0.35);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      font-size: var(--text-small);
+      color: rgba(182,148,90,0.65);
+      font-style: italic;
+      background: rgba(182,148,90,0.04);
+      margin: 0.5rem 0;
+    }
+    .ph-img {
+      aspect-ratio: 16/9;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      text-align: center;
+      border: 1.5px dashed rgba(182,148,90,0.30);
+      border-radius: var(--radius-md);
+      background: rgba(31,43,36,0.25);
+      color: rgba(182,148,90,0.50);
+      font-size: var(--text-small);
+      font-style: italic;
+      padding: 1rem;
+    }
+    .ph-img-tall { aspect-ratio: 4/3; }
+    .ph-img-sq   { aspect-ratio: 1/1; }
+    .ph-icon { font-size: 2rem; opacity: 0.5; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 0;
+      transition: background var(--transition), backdrop-filter var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(14,14,12,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-width: 0;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+    .nav-back:hover { color: var(--accent); }
+    .nav-back-arrow { font-size: 0.8rem; }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-progress {
+      width: 80px;
+      flex: 0 0 80px;
+      height: 2px;
+      background: var(--border-soft);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .nav-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       CASE HERO
+    ============================================================ */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(7rem, 14vh, 9rem) 0 clamp(3rem, 7vh, 4.5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+      /* INSTRUÇÃO: substitua este elemento por uma imagem real do projeto */
+    }
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, transparent 0%, rgba(14,14,12,0.4) 50%, var(--bg-primary) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31,43,36,0.50) 0%, transparent 60%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+      min-width: 0;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      min-width: 0;
+    }
+    .hero-eyebrow-line { width: 36px; height: 1px; background: var(--border-primary); }
+    .hero-category {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 600;
+      letter-spacing: var(--ls-display);
+      line-height: var(--lh-tight);
+      color: var(--color-bone);
+      margin-bottom: 1rem;
+      max-width: 12ch;
+      overflow-wrap: anywhere;
+    }
+    .hero-tagline {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+    .hero-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 1.4rem 2rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-meta-item { min-width: 0; }
+    .hero-meta-label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .hero-meta-value {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+      overflow-wrap: anywhere;
+    }
+
+    .hero-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+    .hero-scroll-text {
+      font-size: 0.62rem;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hero-scroll-line {
+      width: 36px;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+    }
+
+    /* ============================================================
+       OVERVIEW / BRIEF
+    ============================================================ */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .overview-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      transition: border-color var(--transition);
+    }
+    .stat-box:hover { border-color: var(--border-primary); }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+    .stat-context {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY ELEMENTS
+    ============================================================ */
+    .section-label { margin-bottom: 0.6rem; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+      margin-bottom: 1.5rem;
+    }
+    .body-lg {
+      font-family: var(--font-accent);
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+    .body-text {
+      font-size: var(--text-body);
+      color: var(--text-secondary);
+      line-height: var(--lh-body);
+    }
+    .body-text + .body-text { margin-top: 1.2rem; }
+
+    blockquote.pull-quote {
+      border-left: 2px solid var(--accent);
+      padding: 1rem 1.5rem;
+      margin: 2.5rem 0;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+      color: var(--color-bone);
+      line-height: 1.65;
+    }
+    blockquote.pull-quote cite {
+      display: block;
+      font-style: normal;
+      font-size: var(--text-caption);
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    .insight-box {
+      background: rgba(31,43,36,0.55);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 2rem;
+      position: relative;
+    }
+    .insight-box::before {
+      content: '✦';
+      position: absolute;
+      top: -0.6rem;
+      left: 1.8rem;
+      background: var(--bg-primary);
+      padding: 0 0.4rem;
+      color: var(--accent);
+      font-size: 0.7rem;
+    }
+    .insight-box-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    /* ============================================================
+       PROCESS TRACKER (sticky sidebar indicator)
+    ============================================================ */
+    .process-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: clamp(3rem, 5vw, 5rem);
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    .process-track::-webkit-scrollbar { display: none; }
+    .pt-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 100px;
+      position: relative;
+      cursor: pointer;
+    }
+    .pt-step::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 16px);
+      right: calc(-50% + 16px);
+      height: 1px;
+      background: var(--border-soft);
+    }
+    .pt-step:last-child::after { display: none; }
+    .pt-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-soft);
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      transition: all var(--transition);
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .pt-step.active .pt-dot {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(182,148,90,0.12);
+      box-shadow: 0 0 0 4px rgba(182,148,90,0.08);
+    }
+    .pt-step.done .pt-dot {
+      border-color: var(--color-moss);
+      color: var(--color-sage);
+      background: rgba(85,98,75,0.15);
+    }
+    .pt-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .pt-step.active .pt-label { color: var(--accent); }
+
+    /* ============================================================
+       PHASE HEADERS
+    ============================================================ */
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .phase-badge {
+      width: 52px;
+      height: 52px;
+      border: 1.5px solid var(--border-primary);
+      border-radius: 8px;
+      transform: rotate(45deg);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.06);
+      flex-shrink: 0;
+    }
+    .phase-badge-inner { transform: rotate(-45deg); font-size: 1.1rem; }
+    .phase-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+    }
+    .phase-desc {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .cards-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      transition: border-color var(--transition);
+      min-width: 0;
+    }
+    .card:hover { border-color: var(--border-primary); }
+    .card-icon { font-size: 1.2rem; margin-bottom: 0.8rem; }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      margin-bottom: 0.5rem;
+    }
+    .card-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Finding / research card */
+    .finding {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1.2rem 1.4rem;
+    }
+    .finding + .finding { margin-top: 0.6rem; }
+    .finding-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .finding-text {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Persona card */
+    .persona-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .persona-header {
+      background: var(--color-pine);
+      padding: 1.8rem 1.8rem 1.2rem;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .persona-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-primary);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.10);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .persona-name {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .persona-role {
+      font-size: var(--text-caption);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+    .persona-quote {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+    .persona-body { padding: 1.4rem 1.8rem; }
+    .persona-section-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .persona-list li {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .persona-list li::before {
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-sage);
+      flex-shrink: 0;
+      margin-top: 0.55rem;
+    }
+
+    /* HMW tags */
+    .hmw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .hmw-tag {
+      font-size: var(--text-small);
+      color: var(--color-bone);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      line-height: 1.4;
+    }
+    .hmw-tag strong {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       IMAGES / MEDIA
+    ============================================================ */
+    .img-full {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+    }
+    .img-caption {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.7rem;
+      letter-spacing: 0.05em;
+      font-style: italic;
+    }
+    .imgs-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+    .imgs-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .img-with-caption {}
+
+    /* ============================================================
+       TOOLS & TAGS
+    ============================================================ */
+    .tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tool-tag {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    /* ============================================================
+       ITERATION / BEFORE-AFTER
+    ============================================================ */
+    .iteration-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .iteration-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .iteration-col {
+      padding: 0.8rem 1.2rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .iteration-col.before {
+      background: rgba(43,36,31,0.60);
+      color: var(--text-muted);
+      border-right: 1px solid var(--border-soft);
+    }
+    .iteration-col.after {
+      background: rgba(31,43,36,0.50);
+      color: var(--color-sage);
+    }
+    .iteration-imgs {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      border-top: 1px solid var(--border-soft);
+    }
+    .iteration-imgs > div { padding: 1.2rem; }
+    .iteration-imgs > div:first-child { border-right: 1px solid var(--border-soft); }
+
+    /* ============================================================
+       RESULTS / IMPACT
+    ============================================================ */
+    .results-bg {
+      background: var(--color-pine);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-primary);
+      padding: clamp(2.5rem, 5vw, 4rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .results-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .results-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(85,98,75,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+      margin-top: 2.5rem;
+    }
+    .result-item { text-align: center; }
+    .result-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .result-label {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .result-context {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       LEARNINGS
+    ============================================================ */
+    .learning-item {
+      display: flex;
+      gap: 1.2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .learning-item:last-child { border-bottom: none; }
+    .learning-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      color: var(--accent);
+      padding-top: 0.1rem;
+      min-width: 24px;
+    }
+    .learning-content {}
+    .learning-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--color-bone);
+      margin-bottom: 0.4rem;
+    }
+    .learning-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       CASE NAVIGATION
+    ============================================================ */
+    .case-nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      margin-top: clamp(3rem, 6vw, 5rem);
+    }
+    .case-nav-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .case-nav-item:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-2px);
+    }
+    .case-nav-item.next { text-align: right; }
+    .case-nav-dir {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .case-nav-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .case-nav-arrow { font-size: 1.2rem; color: var(--accent); }
+
+    /* Back to portfolio */
+    .back-section {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 0;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-bark);
+      border-top: 1px solid var(--border-soft);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--color-bone);
+      color: var(--color-charcoal);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      border: 1px solid var(--color-bone);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-primary);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--color-bone);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition);
+    }
+    .btn-ghost:hover {
+      background: rgba(182,148,90,0.10);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 860px) {
+      .hero { min-height: auto; padding-top: 7rem; }
+      .nav-progress { width: 56px; flex-basis: 56px; }
+      .overview-grid      { grid-template-columns: 1fr; }
+      .overview-stat-row  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards-2,
+      .cards-3            { grid-template-columns: 1fr; }
+      .imgs-2,
+      .imgs-3             { grid-template-columns: 1fr; }
+      .results-grid       { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .iteration-header,
+      .iteration-imgs     { grid-template-columns: 1fr; }
+      .iteration-col.before { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .iteration-imgs > div:first-child { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .case-nav           { grid-template-columns: 1fr; }
+      .case-nav-item.next { text-align: left; }
+      .hero-meta-strip    { gap: 1.2rem; }
+      .hero-title { max-width: 14ch; }
+    }
+
+    @media (max-width: 560px) {
+      :root { --text-hero: clamp(2rem, 13vw, 3.2rem); }
+      .wrap, .wrap-wide, .wrap-full { padding-inline: 1.1rem; }
+      .nav-back { font-size: 0.62rem; }
+      .nav-logo { font-size: 0.68rem; letter-spacing: 0.03em; }
+      .nav-progress { display: none; }
+      .hero { padding-top: 6.2rem; padding-bottom: 2.4rem; }
+      .hero-eyebrow { gap: 0.7rem; margin-bottom: 1.2rem; }
+      .hero-eyebrow-line { width: 24px; flex-shrink: 0; }
+      .hero-title { max-width: 100%; letter-spacing: 0.035em; }
+      .hero-tagline { margin-bottom: 1.8rem; }
+      .hero-meta-strip { grid-template-columns: 1fr; gap: 1rem; }
+      .overview-stat-row { grid-template-columns: 1fr; }
+      .results-grid      { grid-template-columns: 1fr; }
+      .phase-header      { flex-direction: column; gap: 1rem; }
+      .process-track { margin-inline: -1.1rem; padding-inline: 1.1rem; }
+      .pt-step { min-width: 86px; }
+      .results-bg { padding: 2rem 1.2rem; }
+      .card, .stat-box, .case-nav-item { padding: 1.25rem; }
+      .insight-box { padding: 1.35rem; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+  </style>
+</head>
+
+
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="wrap-full">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <span class="nav-back-arrow">←</span> Portfólio
+        </a>
+        <a href="../index.html" class="nav-logo">Stephany <span>Palos</span></a>
+        <div class="nav-progress" title="Progresso de leitura">
+          <div class="nav-progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-bg-img" style="background: linear-gradient(135deg, #171715 0%, var(--color-pine) 45%, #2B241F 100%);"></div>
+      <div class="hero-bg-gradient"></div>
+    </div>
+    <div class="wrap-full">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span class="hero-category">Design Ops · Figma Plugin · Case Study</span>
+        </div>
+        <h1 class="hero-title">Plugin Figma para Documentação e Handoff</h1>
+        <p class="hero-tagline">Um experimento autoral para transformar o arquivo de design em um espaço mais estruturado de decisão, documentação e colaboração entre design, front-end e QA.</p>
+      </div>
+      <div class="hero-meta-strip">
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Empresa</div>
+          <div class="hero-meta-value">Iniciativa autoral</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Meu Papel</div>
+          <div class="hero-meta-value">Product Designer · Criadora do MVP</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Duração</div>
+          <div class="hero-meta-value">MVP em evolução</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ano</div>
+          <div class="hero-meta-value">2026</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Plataforma</div>
+          <div class="hero-meta-value">Figma Plugin</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ferramentas</div>
+          <div class="hero-meta-value">Figma · IA · Design System · Handoff</div>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-text">Continue lendo</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">✦ Visão Geral</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">O projeto em síntese</h2>
+      </div>
+
+      <div class="overview-grid reveal reveal-delay-1">
+        <div>
+          <p class="body-lg">Este case apresenta uma iniciativa autoral em Design Ops: a criação de um plugin do Figma para investigar como documentação, decisões de design e informações de handoff poderiam ficar mais próximas do lugar onde as telas são construídas.</p>
+          <p class="body-text" style="margin-top:1.4rem;">A hipótese nasceu de um problema recorrente em projetos digitais: o arquivo de design organiza a interface, mas nem sempre organiza o contexto. Regras, critérios de QA, decisões de componente, orientações para front-end e justificativas de design acabam ficando espalhadas em reuniões, mensagens, planilhas, documentos soltos ou na memória das pessoas.</p>
+          <p class="body-text" style="margin-top:1rem;">A proposta do plugin foi explorar uma camada de documentação dentro do próprio fluxo de trabalho no Figma, ajudando designers a estruturar páginas, registrar decisões, indicar componentes utilizados e preparar uma entrega mais rastreável para front-end e QA.</p>
+        </div>
+
+        <div>
+          <div class="ph-img">
+            <span class="ph-icon">🧩</span>
+            <span>Espaço para print do plugin<br/><small>Inserir captura do painel, abas ou funções aplicadas</small></span>
+          </div>
+          <p class="img-caption">Sugestão: tela do plugin com organização, documentação ou funções de handoff.</p>
+        </div>
+      </div>
+
+      <div class="overview-stat-row reveal reveal-delay-2">
+        <div class="stat-box">
+          <div class="stat-value">MVP</div>
+          <div class="stat-label">Iniciativa autoral</div>
+          <div class="stat-context">Experimento funcional para validar uma hipótese de Design Ops.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">3 perfis</div>
+          <div class="stat-label">Design · Front · QA</div>
+          <div class="stat-context">Foco em reduzir perda de contexto entre papéis envolvidos na entrega.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">Figma</div>
+          <div class="stat-label">Ambiente de trabalho</div>
+          <div class="stat-context">Documentação pensada para nascer junto com o fluxo e não depois dele.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap-wide">
+    <div class="process-track reveal">
+      <div class="pt-step done"><div class="pt-dot">◎</div><span class="pt-label">Discover</span></div>
+      <div class="pt-step done"><div class="pt-dot">◈</div><span class="pt-label">Define</span></div>
+      <div class="pt-step active"><div class="pt-dot">✦</div><span class="pt-label">Develop</span></div>
+      <div class="pt-step"><div class="pt-dot">⟡</div><span class="pt-label">Deliver</span></div>
+      <div class="pt-step"><div class="pt-dot">◉</div><span class="pt-label">Validate</span></div>
+    </div>
+  </div>
+
+  <section class="section" style="background: var(--bg-surface);" id="challenge">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Contexto</div>
+          <h2 class="phase-title">O Desafio</h2>
+          <p class="phase-desc">O problema que motivou o projeto e as restrições que moldaram a primeira versão.</p>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Problem Statement</div>
+          <div class="card-body">Designers conseguem organizar telas no Figma, mas informações essenciais para desenvolvimento, QA e continuidade do produto nem sempre ficam registradas de forma estruturada. Isso cria dependência de explicações manuais e aumenta o risco de perda de contexto no handoff.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Objetivo do Projeto</div>
+          <div class="card-body">Criar um MVP de plugin para apoiar organização, documentação e rastreabilidade dentro do Figma, conectando decisões de design, componentes utilizados, critérios de QA e informações úteis para front-end.</div>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-2" style="margin-top:1rem;">
+        <div class="card">
+          <div class="card-icon">🧑‍💻</div>
+          <div class="card-title">Meu Papel</div>
+          <div class="card-body">Idealizei o problema, mapeei necessidades por papel, desenhei a lógica da experiência, construí o MVP do plugin, explorei uso de IA no processo e organizei a narrativa de valor para apresentar a iniciativa internamente.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Time & Colaboração</div>
+          <div class="card-body">Iniciativa autoral, alimentada por conversas e entrevistas exploratórias com pessoas ligadas a design, desenvolvimento, QA e gestão. A proposta foi validada como oportunidade de melhoria de processo, ainda sem adoção formal em escala.</div>
+        </div>
+      </div>
+
+      <div class="insight-box reveal reveal-delay-3" style="margin-top:2rem;">
+        <div class="insight-box-label">Restrições do Projeto</div>
+        <p class="body-text">O projeto foi tratado como experimento, não como produto corporativo lançado. Por isso, os resultados são apresentados como aprendizados, hipóteses validadas e potencial de uso, sem métricas de adoção ou produtividade que ainda não foram medidas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="discover">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Fase 01 · Discover</div>
+          <h2 class="phase-title">Pesquisa & Descoberta</h2>
+          <p class="phase-desc">Entendendo onde o handoff perde contexto e como cada papel consome informação.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Métodos de Research</span>
+        <div class="tools-row" style="margin-top:0.8rem;">
+          <span class="tool-tag">Entrevistas exploratórias</span>
+          <span class="tool-tag">Mapeamento de papéis</span>
+          <span class="tool-tag">Análise de handoff</span>
+          <span class="tool-tag">Design Ops</span>
+          <span class="tool-tag">Prototipação técnica</span>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;" class="reveal reveal-delay-1">
+        <p class="body-lg">A descoberta partiu da observação de fluxos reais de trabalho e de entrevistas exploratórias para entender como designers, front-end e QA lidam com documentação, decisões e critérios de entrega. O objetivo não era criar mais uma camada burocrática, mas identificar onde uma ferramenta poderia reduzir ambiguidade.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:2rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">📋</span>
+              <span>Mapa de necessidades por papel</span>
+            </div>
+            <p class="img-caption">Design, front-end e QA consomem informações diferentes do mesmo fluxo.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">🧭</span>
+              <span>Fluxo atual de handoff</span>
+            </div>
+            <p class="img-caption">Identificação de pontos onde contexto, regra e decisão se perdem.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Principais Achados</span>
+        <div style="margin-top:1rem;">
+          <div class="finding">
+            <div class="finding-num">Achado 01</div>
+            <div class="finding-text">O handoff tradicional concentra aparência da interface, mas nem sempre registra comportamento esperado, regra de uso, decisão tomada e critérios de teste.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 02</div>
+            <div class="finding-text">QA precisa de rastreabilidade para entender cenários, evidências e critérios de validação, não apenas ver a tela final.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 03</div>
+            <div class="finding-text">Front-end se beneficia quando o design explicita componentes usados, estados, data-test esperado e limites de implementação, deixando o time pensar menos no que fazer e mais em como fazer.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 04</div>
+            <div class="finding-text">Para o designer, a ferramenta precisa apoiar organização e memória de decisão sem transformar o trabalho em preenchimento excessivo de formulário.</div>
+          </div>
+        </div>
+      </div>
+
+      <blockquote class="pull-quote reveal reveal-delay-2">
+        "O problema não era só entregar tela. Era entregar contexto suficiente para que outras pessoas conseguissem continuar o trabalho com menos achismo."
+        <cite>— Insight sintetizado da descoberta</cite>
+      </blockquote>
+
+      <div class="reveal reveal-delay-1" style="margin-top:1rem;">
+        <span class="label">Referências e contexto técnico</span>
+        <p class="body-text" style="margin-top:0.8rem;">A exploração considerou práticas de documentação em Design System, handoff estruturado, critérios de QA, tabelas de data-test e possibilidades de integração futura com IA, MCP ou saídas estruturadas em JSON. O objetivo foi manter o MVP pequeno, mas com direção clara para evolução.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal">
+          <span class="ph-icon">🔍</span>
+          <span>Referências de documentação, handoff e Design Ops</span>
+        </div>
+        <p class="img-caption">Sugestão: inserir mapa comparativo de referências, plugins, fluxos ou artefatos de handoff.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--bg-secondary);" id="define">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◈</span></div>
+        <div>
+          <div class="phase-num">Fase 02 · Define</div>
+          <h2 class="phase-title">Síntese & Definição</h2>
+          <p class="phase-desc">Transformando dor de processo em uma hipótese de produto interno.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Perfis de uso</span>
+      </div>
+      <div class="cards-2 reveal reveal-delay-1" style="margin-top:1rem;">
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">🧑‍🎨</div>
+            <div>
+              <div class="persona-name">Designer de produto</div>
+              <div class="persona-role">Criador do fluxo e da documentação</div>
+              <div class="persona-quote">"Preciso organizar a entrega sem perder tempo duplicando contexto em vários lugares."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+              <li>Documentar decisões de forma leve e rastreável.</li>
+              <li>Indicar componentes, estados e regras de uso dentro do próprio fluxo.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+              <li>Explicar repetidamente decisões que já estavam implícitas no arquivo.</li>
+              <li>Perder histórico de decisão entre reuniões, comentários e mensagens.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+              <li>Organiza frames e páginas no Figma conforme a demanda evolui.</li>
+              <li>Precisa equilibrar entrega visual, documentação e alinhamento com time.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">🧑‍💻</div>
+            <div>
+              <div class="persona-name">Front-end e QA</div>
+              <div class="persona-role">Consumidores da especificação</div>
+              <div class="persona-quote">"Preciso entender regra, comportamento e critério de validação sem depender de interpretação solta."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+              <li>Receber informações claras sobre componentes, estados e comportamentos.</li>
+              <li>Validar cenários com critérios mais explícitos.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+              <li>Handoff visual sem contexto de regra ou exceção.</li>
+              <li>Critérios de QA e data-test definidos tarde ou de forma inconsistente.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+              <li>Consulta Figma, Jira, documentação e conversas para reconstruir contexto.</li>
+              <li>Precisa transformar decisões de design em implementação e teste.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider wrap">
+        <div class="divider-line"></div>
+        <span class="divider-icon">✦</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Jornada do handoff</span>
+        <p class="body-text" style="margin-top:0.6rem;">A jornada revelou que a entrega não termina quando a tela fica pronta. Ela passa por interpretação, implementação, teste, ajuste e memória futura. O plugin foi pensado para apoiar esse caminho de ponta a ponta, começando pela organização do arquivo.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🗺️</span>
+          <span>Jornada de documentação e handoff</span>
+        </div>
+        <p class="img-caption">Sugestão: mapa de fluxo mostrando design → documentação → front-end → QA.</p>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Insights Síntese</span>
+        <p class="body-text" style="margin-top:0.6rem;">A síntese separou o problema em três camadas: organização do arquivo, documentação de decisão e especificação consumível por outros papéis.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">🗂️</span>
+              <span>Matriz de necessidades</span>
+            </div>
+            <p class="img-caption">Separação entre necessidades de design, front-end e QA.</p>
+          </div>
+          <div>
+            <span class="label" style="margin-bottom:0.8rem; display:block;">Insights Priorizados</span>
+            <div class="finding">
+              <div class="finding-num">Insight 01</div>
+              <div class="finding-text">O Figma pode ser mais que repositório visual: pode apoiar a memória de decisão do produto.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 02</div>
+              <div class="finding-text">A documentação precisa nascer junto com o fluxo para não virar retrabalho ao fim da entrega.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 03</div>
+              <div class="finding-text">Handoff útil é aquele que reduz ambiguidade para quem implementa e para quem testa.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">How Might We?</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.2rem;">As perguntas que guiaram a primeira versão do MVP.</p>
+        <div class="hmw-grid">
+          <div class="hmw-tag"><strong>HMW</strong> registrar decisões de design sem criar burocracia?</div>
+          <div class="hmw-tag"><strong>HMW</strong> aproximar documentação do lugar onde o fluxo é desenhado?</div>
+          <div class="hmw-tag"><strong>HMW</strong> ajudar front-end e QA a consumirem contexto sem depender de reunião?</div>
+          <div class="hmw-tag"><strong>HMW</strong> transformar componentes usados em uma especificação mais rastreável?</div>
+          <div class="hmw-tag"><strong>HMW</strong> preparar o handoff para uma futura camada de IA ou JSON estruturado?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="develop">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">✦</span></div>
+        <div>
+          <div class="phase-num">Fase 03 · Develop</div>
+          <h2 class="phase-title">Ideação & Prototipagem</h2>
+          <p class="phase-desc">Do problema à ferramenta: definindo escopo, abas e funções do MVP.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Processo de Ideação</span>
+        <p class="body-text" style="margin-top:0.8rem;">A ideação partiu de uma pergunta prática: o que o plugin precisaria fazer para ajudar imediatamente o designer, sem tentar resolver todo o handoff de uma vez? A primeira camada ficou focada em organização e documentação; a segunda, em possibilidades para QA e front-end.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-3 reveal reveal-delay-1">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">✏️</span><span>Rascunho das abas</span></div>
+            <p class="img-caption">Organização principal e área de documentação/handoff.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">📐</span><span>Fluxo do plugin</span></div>
+            <p class="img-caption">Ações do usuário antes e depois de aplicar uma função.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">🧪</span><span>Teste funcional</span></div>
+            <p class="img-caption">Exploração técnica com Figma Plugin API e IA.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Estrutura do MVP</span>
+        <p class="body-text" style="margin-top:0.8rem;">O MVP foi pensado com uma separação simples: uma área principal para organização do arquivo e uma segunda frente para documentação/handoff. Essa divisão evita misturar tarefas de design com tarefas de entrega, mas mantém tudo no mesmo ambiente.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1">
+          <span class="ph-icon">🧱</span>
+          <span>Wireframe do plugin<br/><small>Inserir imagem da interface do plugin ou layout das abas</small></span>
+        </div>
+        <p class="img-caption">Estrutura inicial do plugin com foco em organização, documentação e handoff.</p>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Fluxo de uso</span>
+        <p class="body-text" style="margin-top:0.8rem;">O fluxo foi desenhado para o designer selecionar ou organizar partes do arquivo, aplicar uma função do plugin e gerar uma estrutura mais clara para continuidade: páginas, frames, áreas de documentação e campos que ajudam a explicar decisão, regra e critério de validação.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-2" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">→</span>
+          <span>Fluxo antes/depois da ação do plugin</span>
+        </div>
+        <p class="img-caption">Sugestão: mostrar como o arquivo fica antes e depois de aplicar uma função.</p>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Decisões de Design</span>
+        <div class="cards-2" style="margin-top:1rem;">
+          <div class="card">
+            <div class="card-icon">💡</div>
+            <div class="card-title">Decisão 1: Documentação como parte do fluxo</div>
+            <div class="card-body">A documentação não foi tratada como etapa final. A proposta foi aproximá-la da criação das telas, para capturar decisões enquanto o contexto ainda está vivo.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔀</div>
+            <div class="card-title">Decisão 2: Separar necessidades por papel</div>
+            <div class="card-body">Design, front-end e QA não precisam da mesma informação no mesmo formato. O MVP considerou essa diferença para evitar uma documentação genérica demais.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--bg-surface);" id="deliver">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">⟡</span></div>
+        <div>
+          <div class="phase-num">Fase 04 · Deliver</div>
+          <h2 class="phase-title">MVP do Plugin</h2>
+          <p class="phase-desc">A primeira versão funcional da solução e os artefatos que ela ajuda a estruturar.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <p class="body-lg">A entrega foi um MVP de plugin do Figma em evolução, usado para tangibilizar a hipótese de uma documentação mais integrada ao arquivo. A solução organiza a conversa entre telas, decisões, componentes e critérios de entrega, sem prometer substituir documentação formal ou governança do time.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:2rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 16/10; min-height: 300px;">
+          <span class="ph-icon">🖥</span>
+          <span>Hero shot do plugin<br/><small>Inserir print do painel principal do plugin</small></span>
+        </div>
+        <p class="img-caption">Interface do plugin com abas, ações e estrutura de documentação.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1rem;">
+        <div class="imgs-3 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">🗂️</span><span>Organização</span></div>
+            <p class="img-caption">Estruturação de páginas, frames ou áreas do arquivo.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">📄</span><span>Documentação</span></div>
+            <p class="img-caption">Campos para contexto, decisão e regra de uso.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq"><span class="ph-icon">✅</span><span>Handoff / QA</span></div>
+            <p class="img-caption">Critérios e informações para implementação e teste.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3.5rem;" class="reveal reveal-delay-1">
+        <span class="label">Evolução do processo</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.5rem;">A principal mudança proposta não é visual, mas operacional: sair de um arquivo que depende de explicação verbal para um arquivo que carrega parte do raciocínio, das decisões e dos critérios necessários para continuidade.</p>
+        <div class="iteration-block">
+          <div class="iteration-header">
+            <div class="iteration-col before">← Antes</div>
+            <div class="iteration-col after">Depois →</div>
+          </div>
+          <div class="iteration-imgs">
+            <div>
+              <div class="ph-img ph-img-sq"><span class="ph-icon">🔴</span><span>Figma como tela final</span></div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Contexto distribuído em reuniões, mensagens e memória do time.</p>
+            </div>
+            <div>
+              <div class="ph-img ph-img-sq"><span class="ph-icon">🟢</span><span>Figma como especificação viva</span></div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Decisões, componentes e critérios de entrega mais próximos do fluxo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Design System & Documentação</span>
+        <p class="body-text" style="margin-top:0.6rem;">O plugin também foi pensado como ponte com Design System: registrar componentes utilizados, reforçar padrões, indicar regras de uso e criar uma base que possa evoluir para saídas mais estruturadas, como checklist de QA, tabela de data-test ou JSON de especificação.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🎨</span>
+          <span>Componentes usados + critérios de documentação</span>
+        </div>
+        <p class="img-caption">Sugestão: print da documentação gerada ou estrutura dentro do arquivo Figma.</p>
+      </div>
+
+      <div class="insight-box reveal reveal-delay-1" style="margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+        <div>
+          <div class="insight-box-label">Protótipo / MVP funcional</div>
+          <p class="body-text">Plugin em fase experimental. Link, repositório ou demonstração podem ser incluídos conforme disponibilidade e confidencialidade.</p>
+        </div>
+        <a href="#" target="_blank" rel="noopener" class="btn-ghost">Ver demonstração →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="validate">
+    <div class="wrap">
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◉</span></div>
+        <div>
+          <div class="phase-num">Fase 05 · Validate</div>
+          <h2 class="phase-title">Validação Inicial</h2>
+          <p class="phase-desc">Testando a clareza da proposta antes de tratar a solução como produto escalado.</p>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">Método de Validação</div>
+          <div class="card-body">Validação exploratória por conversa, demonstração do conceito e revisão do problema com pessoas que consomem ou participam de handoff. Não houve, neste recorte, teste quantitativo de adoção.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Participantes</div>
+          <div class="card-body">Pessoas ligadas a design, desenvolvimento, QA e gestão, usadas como referência para entender aderência da proposta e oportunidades de evolução.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+        <span class="label">O que a validação revelou</span>
+        <div style="margin-top:1rem;">
+          <div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Funcionou</div>
+            <div class="finding-text">A proposta tornou visível um problema que muitas vezes é tratado como “falta de alinhamento”, mas que também é falta de estrutura para carregar contexto.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Ponto de atenção</div>
+            <div class="finding-text">O plugin não pode virar mais uma obrigação manual. Para escalar, precisa automatizar partes do preenchimento ou se conectar a fontes estruturadas.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Ponto de atenção</div>
+            <div class="finding-text">A frente de QA e front-end exige critérios mais objetivos, como data-test, estados, regras de exceção e checklist por componente.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Validado</div>
+            <div class="finding-text">O case abriu espaço para conversas sobre IA, documentação viva, Design System e handoff mais estruturado.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:2.5rem;" class="reveal reveal-delay-2">
+        <span class="label">Iterações Após a Validação</span>
+        <p class="body-text" style="margin-top:0.8rem;">As principais iterações previstas são separar melhor as abas por finalidade, tornar a frente de QA mais objetiva e explorar saídas estruturadas para que a documentação possa ser reaproveitada por IA, desenvolvimento e testes.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-3">
+          <div class="img-with-caption">
+            <div class="ph-img"><span class="ph-icon">🔄</span><span>Primeira hipótese</span></div>
+            <p class="img-caption">Plugin como organizador do arquivo e apoio ao designer.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img"><span class="ph-icon">✅</span><span>Hipótese evoluída</span></div>
+            <p class="img-caption">Plugin como ponte entre design, front-end, QA e documentação estruturada.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--bg-secondary);" id="results">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">✦ Resultados</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Impacto & Métricas</h2>
+        <p class="body-lg" style="margin-top:0.5rem;">Como este projeto ainda é um MVP autoral, os resultados são apresentados de forma qualitativa. Não há, neste momento, métricas públicas de adoção, produtividade ou redução de retrabalho.</p>
+      </div>
+
+      <div class="results-bg reveal reveal-delay-1" style="margin-top:2rem;">
+        <div class="results-grid">
+          <div class="result-item">
+            <div class="result-value">MVP</div>
+            <div class="result-label">Tangibilização</div>
+            <div class="result-context">A hipótese saiu do discurso e virou uma ferramenta testável.</div>
+          </div>
+          <div class="result-item">
+            <div class="result-value">Design Ops</div>
+            <div class="result-label">Oportunidade</div>
+            <div class="result-context">A iniciativa evidenciou gargalos de processo e documentação.</div>
+          </div>
+          <div class="result-item">
+            <div class="result-value">IA</div>
+            <div class="result-label">Exploração futura</div>
+            <div class="result-context">Base para pensar documentação estruturada, MCP e saídas em JSON.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Resultados Qualitativos</span>
+        <p class="body-text" style="margin-top:0.8rem;">A iniciativa ajudou a demonstrar maturidade além da interface: capacidade de identificar um gargalo sistêmico, propor uma ferramenta, prototipar uma solução e conectar design, tecnologia, QA e documentação em uma mesma conversa.</p>
+      </div>
+
+      <blockquote class="pull-quote reveal reveal-delay-2">
+        "Síntese do impacto: o projeto mostra design como prática de estruturação — não só de telas, mas de processos, decisões e colaboração."
+        <cite>— Resumo interpretativo do case</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section" id="learnings">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">✦ Reflexões</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Aprendizados</h2>
+        <p class="body-lg" style="margin-top:0.5rem;">Este projeto reforçou uma percepção importante: muitas falhas de handoff não nascem da falta de boa vontade entre áreas, mas da falta de uma estrutura clara para transportar contexto.</p>
+      </div>
+
+      <div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+        <div class="learning-item">
+          <div class="learning-num">01</div>
+          <div class="learning-content">
+            <div class="learning-title">Documentação boa reduz dependência de memória</div>
+            <div class="learning-body">Quando uma decisão só existe em conversa, ela se perde. O plugin parte da ideia de que a memória do produto precisa ficar mais próxima do artefato de trabalho.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">02</div>
+          <div class="learning-content">
+            <div class="learning-title">Handoff é uma conversa, não um arquivo</div>
+            <div class="learning-body">A ferramenta não substitui alinhamento entre pessoas, mas pode melhorar a qualidade da conversa ao tornar regras, decisões e critérios mais explícitos.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">03</div>
+          <div class="learning-content">
+            <div class="learning-title">O que eu faria diferente</div>
+            <div class="learning-body">Na próxima iteração, começaria ainda mais focada em um único fluxo crítico — por exemplo, tabela de data-test e critérios de QA por componente — para validar valor antes de expandir funcionalidades.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◇</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Próximos Passos</span>
+        <p class="body-text" style="margin-top:0.8rem;">A evolução natural do plugin é sair de um organizador/documentador e caminhar para uma camada mais estruturada de especificação, com dados reaproveitáveis por QA, front-end e IA.</p>
+      </div>
+      <div class="cards-3 reveal reveal-delay-1" style="margin-top:1.5rem;">
+        <div class="card">
+          <div class="card-icon">🔮</div>
+          <div class="card-title">QA estruturado</div>
+          <div class="card-body">Criar checklist, cenários e campos de data-test por componente ou fluxo.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Saída em JSON</div>
+          <div class="card-body">Explorar exportação de especificações para documentação, automação ou validação técnica.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">Integração com IA</div>
+          <div class="card-body">Investigar como MCP, agentes ou skills podem consumir a documentação gerada.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" style="background: var(--bg-surface);">
+    <div class="wrap">
+      <div class="case-nav reveal">
+        <a href="case-speedo-ecommerce.html" class="case-nav-item">
+          <div class="case-nav-dir">← Case Anterior</div>
+          <div class="case-nav-title">Speedo E-commerce</div>
+          <div class="case-nav-arrow">←</div>
+        </a>
+        <a href="case-onboarding-b3.html" class="case-nav-item next">
+          <div class="case-nav-dir">Próximo Case →</div>
+          <div class="case-nav-title">Onboarding B3</div>
+          <div class="case-nav-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="back-section reveal">
+        <a href="../index.html" class="btn-ghost">← Voltar ao Portfólio</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap-full">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Stephany <span>Palos</span></div>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
+        </div>
+        <div class="footer-copy">© 2025 Stephany Palos</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCRIPTS
+  ============================================================ -->
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Reading progress bar
+    const bar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (scrollTop / docH * 100) + '%';
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.10, rootMargin: '0px 0px -30px 0px' }
+    );
+    reveals.forEach(el => obs.observe(el));
+
+    // Process tracker — highlight based on scroll position
+    const phases = ['challenge','discover','define','develop','deliver','validate','results'];
+    const steps  = document.querySelectorAll('.pt-step');
+    const sectionObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          const idx = phases.indexOf(id);
+          if (idx === -1) return;
+          steps.forEach((s, i) => {
+            s.classList.remove('active','done');
+            if (i < idx) s.classList.add('done');
+            if (i === idx) s.classList.add('active');
+          });
+        });
+      },
+      { threshold: 0.3 }
+    );
+    phases.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+  </script>
+
+</body>
+</html>

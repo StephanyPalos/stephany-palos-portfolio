@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- PREENCHER: título e descrição do artigo -->
+  <meta name="description" content="[Descrição do artigo — 1 frase para SEO]" />
+  <meta name="author" content="Stephany Palos" />
+  <meta property="og:title" content="[Título do Artigo] — Stephany Palos" />
+  <meta property="og:description" content="[Descrição breve do artigo]" />
+  <meta property="og:type" content="article" />
+  <title>[Título do Artigo] — Stephany Palos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — espelhados do portfólio principal
+    ============================================================ */
+    :root {
+      --color-pine: #1F2B24;
+      --color-moss: #55624B;
+      --color-charcoal: #121212;
+      --color-bone: #EEE7D6;
+      --color-ochre: #B6945A;
+      --color-sage: #A5B08F;
+      --color-mist-green: #D7DDCC;
+      --color-bark: #2B241F;
+      --color-moon-dust: #CFC5AF;
+
+      --bg-primary: #0E0E0C;
+      --bg-secondary: var(--color-pine);
+      --bg-surface: #171715;
+      --bg-card: #1C1C19;
+
+      --text-primary: var(--color-bone);
+      --text-secondary: var(--color-moon-dust);
+      --text-muted: rgba(238,231,214,0.55);
+
+      --border-primary: rgba(182,148,90,0.40);
+      --border-soft: rgba(238,231,214,0.10);
+
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-accent: 'Cormorant Garamond', serif;
+
+      --text-body-lg: 1.125rem;
+      --text-body: 1rem;
+      --text-small: 0.875rem;
+      --text-caption: 0.75rem;
+
+      --lh-tight: 1.15;
+      --lh-reading: 1.85;
+
+      --ls-display: 0.05em;
+      --ls-heading: 0.03em;
+      --ls-small: 0.13em;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --container-max: 1260px;
+      --article-col: 680px;
+      --sidebar-col: 300px;
+      --transition: 260ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: var(--lh-reading);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(182,148,90,0.25); color: var(--color-bone); }
+    img { display: block; max-width: 100%; border-radius: var(--radius-sm); }
+    a { color: inherit; text-decoration: none; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 900;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .wrap-full {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 5rem);
+    }
+
+    /* ============================================================
+       NAV — idêntico aos cases
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 0;
+      transition: background var(--transition), backdrop-filter var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(14,14,12,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+    .nav-back:hover { color: var(--color-ochre); }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .nav-logo span { color: var(--color-ochre); }
+    .nav-progress {
+      width: 80px;
+      height: 2px;
+      background: var(--border-soft);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .nav-progress-bar {
+      height: 100%;
+      background: var(--color-ochre);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       ARTICLE HERO
+    ============================================================ */
+    .hero {
+      padding: clamp(7rem, 14vh, 10rem) 0 clamp(3rem, 6vh, 4.5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31,43,36,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 90% 80%, rgba(85,98,75,0.10) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-primary), transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: var(--article-col);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+    }
+    .hero-eyebrow-line { width: 32px; height: 1px; background: var(--border-primary); }
+    .hero-category {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 600;
+      letter-spacing: var(--ls-display);
+      line-height: 1.2;
+      color: var(--color-bone);
+      margin-bottom: 1.2rem;
+    }
+    .hero-subtitle {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hero-meta-dot {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--border-primary);
+    }
+    .article-tags-hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1.5rem;
+    }
+    .article-tag {
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.20);
+      padding: 0.25rem 0.7rem;
+      border-radius: 3px;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT — article body + sidebar
+    ============================================================ */
+    .article-layout {
+      display: grid;
+      grid-template-columns: var(--article-col) var(--sidebar-col);
+      gap: clamp(3rem, 5vw, 5rem);
+      align-items: start;
+      padding: clamp(3.5rem, 6vw, 5rem) 0 clamp(4rem, 8vw, 7rem);
+    }
+
+    /* ============================================================
+       ARTICLE BODY
+    ============================================================ */
+    .article-body {
+      min-width: 0;
+    }
+
+    /* Typography hierarchy for article content */
+    .article-body h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: 1.25;
+      margin: 2.5rem 0 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-soft);
+    }
+    .article-body h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+    .article-body h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      font-weight: 600;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p {
+      font-size: clamp(1rem, 1.2vw, 1.05rem);
+      color: var(--text-secondary);
+      line-height: var(--lh-reading);
+      margin-bottom: 1.4rem;
+    }
+
+    .article-body p:first-of-type {
+      font-family: var(--font-accent);
+      font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+      font-style: italic;
+      color: var(--color-bone);
+      line-height: 1.8;
+    }
+
+    .article-body strong {
+      color: var(--color-bone);
+      font-weight: 600;
+    }
+
+    .article-body em {
+      font-family: var(--font-accent);
+      font-style: italic;
+      color: var(--color-moon-dust);
+    }
+
+    .article-body a {
+      color: var(--color-ochre);
+      text-decoration: underline;
+      text-decoration-color: rgba(182,148,90,0.4);
+      transition: text-decoration-color var(--transition);
+    }
+    .article-body a:hover { text-decoration-color: var(--color-ochre); }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.4rem;
+    }
+    .article-body li {
+      font-size: clamp(1rem, 1.2vw, 1.05rem);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+    .article-body li::marker { color: var(--color-ochre); }
+
+    .article-body blockquote {
+      border-left: 2px solid var(--color-ochre);
+      padding: 1rem 1.5rem;
+      margin: 2rem 0;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+      color: var(--color-bone);
+      line-height: 1.65;
+    }
+    .article-body blockquote cite {
+      display: block;
+      font-style: normal;
+      font-size: var(--text-caption);
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    /* Imagem dentro do artigo */
+    .article-body figure {
+      margin: 2.5rem 0;
+    }
+    .article-body figure img {
+      width: 100%;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+    }
+    .article-body figcaption {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.6rem;
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+
+    /* Destaque / caixa de insight */
+    .article-body .insight {
+      background: rgba(31,43,36,0.55);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: 1.5rem 1.8rem;
+      margin: 2rem 0;
+      position: relative;
+    }
+    .article-body .insight::before {
+      content: '✦';
+      position: absolute;
+      top: -0.6rem;
+      left: 1.5rem;
+      background: var(--bg-primary);
+      padding: 0 0.4rem;
+      color: var(--color-ochre);
+      font-size: 0.7rem;
+    }
+    .article-body .insight p {
+      color: var(--color-bone);
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1rem, 1.3vw, 1.1rem);
+    }
+    .article-body .insight p:first-of-type { font-size: inherit; font-style: italic; }
+
+    /* Separador interno */
+    .article-body hr {
+      border: none;
+      height: 1px;
+      background: var(--border-soft);
+      margin: 3rem 0;
+    }
+
+    /* Label de seção */
+    .article-body .section-label {
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ============================================================
+       PLACEHOLDER para imagem de capa interna
+    ============================================================ */
+    .article-cover {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--color-pine) 0%, #1a2618 50%, var(--color-moss) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      display: grid;
+      place-items: center;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-cover img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+    }
+    .article-cover-placeholder {
+      font-size: 0.75rem;
+      color: rgba(182,148,90,0.4);
+      font-style: italic;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* ============================================================
+       ARTICLE FOOTER (autor + compartilhar)
+    ============================================================ */
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border-soft);
+    }
+    .article-author {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .author-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-primary);
+      background: var(--color-pine);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .author-avatar-fallback {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-ochre);
+      letter-spacing: 0.05em;
+    }
+    .author-name {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .author-role {
+      font-size: var(--text-caption);
+      color: var(--color-ochre);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+    .author-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.6rem;
+    }
+    .author-link {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .author-link:hover { color: var(--color-ochre); }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar {
+      position: sticky;
+      top: 6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .sidebar-block-header {
+      background: rgba(31,43,36,0.50);
+      padding: 1rem 1.4rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .sidebar-block-title {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+    }
+    .sidebar-block-body { padding: 1.2rem 1.4rem; }
+
+    /* Sobre a autora */
+    .sidebar-author {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-bottom: 0.9rem;
+    }
+    .sidebar-author-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border-primary);
+      background: var(--color-pine);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .sidebar-author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .sidebar-author-name {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-bone);
+    }
+    .sidebar-author-role {
+      font-size: 0.6rem;
+      color: var(--color-ochre);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+    }
+    .sidebar-author-bio {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 0.9rem;
+    }
+    .sidebar-linkedin {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      border: 1px solid var(--border-primary);
+      padding: 0.4rem 0.9rem;
+      border-radius: 4px;
+      transition: all var(--transition);
+    }
+    .sidebar-linkedin:hover {
+      background: rgba(182,148,90,0.10);
+      color: var(--color-bone);
+    }
+
+    /* Índice de artigos */
+    .article-index-list { list-style: none; }
+    .article-index-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .article-index-item:last-child { border-bottom: none; }
+    .article-index-link {
+      display: block;
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.4;
+      transition: color var(--transition);
+    }
+    .article-index-link:hover { color: var(--color-bone); }
+    .article-index-link.active {
+      color: var(--color-ochre);
+      font-weight: 500;
+    }
+    .article-index-link.active::before {
+      content: '✦ ';
+      font-size: 0.55rem;
+    }
+    .article-index-meta {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ToC (Sumário do artigo atual) */
+    .toc-list { list-style: none; }
+    .toc-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .toc-item:last-child { border-bottom: none; }
+    .toc-link {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      transition: color var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toc-link:hover { color: var(--color-ochre); }
+    .toc-link.active { color: var(--color-ochre); }
+    .toc-num {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      width: 16px;
+    }
+
+    /* ============================================================
+       ARTIGOS RELACIONADOS (bottom)
+    ============================================================ -->
+    ============================================================ */
+    .related {
+      padding: clamp(4rem, 8vw, 6rem) 0;
+      border-top: 1px solid var(--border-soft);
+    }
+    .related-header {
+      margin-bottom: 2rem;
+    }
+    .related-label {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      margin-bottom: 0.5rem;
+    }
+    .related-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Article card (idêntico ao portfólio) */
+    .article-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .article-card:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-2px);
+    }
+    .article-date {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .article-title {
+      font-family: var(--font-display);
+      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--color-bone);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .article-excerpt {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      margin-top: auto;
+      transition: gap var(--transition);
+    }
+    .article-link:hover { gap: 0.7rem; }
+
+    /* Nav entre artigos */
+    .article-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .article-nav-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      transition: all var(--transition);
+    }
+    .article-nav-item:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-1px);
+    }
+    .article-nav-item.next { text-align: right; }
+    .article-nav-dir {
+      font-size: var(--text-caption);
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .article-nav-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-bone);
+      line-height: 1.35;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-bark);
+      border-top: 1px solid var(--border-soft);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .footer-logo span { color: var(--color-ochre); }
+    .footer-copy { font-size: var(--text-caption); color: var(--text-muted); }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      background: transparent;
+      color: var(--color-bone);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition);
+    }
+    .btn-ghost:hover {
+      background: rgba(182,148,90,0.10);
+      border-color: var(--color-ochre);
+      color: var(--color-ochre);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+    }
+    @media (max-width: 700px) {
+      .sidebar { grid-template-columns: 1fr; }
+      .related-grid { grid-template-columns: 1fr; }
+      .article-nav { grid-template-columns: 1fr; }
+      .article-nav-item.next { text-align: left; }
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="wrap-full">
+      <div class="nav-inner">
+        <a href="../articles.html" class="nav-back">← Artigos</a>
+        <a href="../index.html" class="nav-logo">Stephany <span>Palos</span></a>
+        <div class="nav-progress" title="Progresso de leitura">
+          <div class="nav-progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO DO ARTIGO
+       O que preencher:
+         - Categoria (Ex: Design, Research, Processo, Produto)
+         - Título do artigo
+         - Subtítulo/lead (1 frase que expande o título)
+         - Data, tempo de leitura, tags
+  ============================================================ -->
+  <section class="hero">
+    <div class="wrap-full">
+      <div class="hero-inner">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <!-- PREENCHER: categoria do artigo -->
+          <span class="hero-category">[Categoria] · Artigo</span>
+        </div>
+        <!-- PREENCHER: título principal do artigo -->
+        <h1 class="hero-title">[Título do Artigo]</h1>
+        <!-- PREENCHER: subtítulo/lead — expande o título em 1 frase -->
+        <p class="hero-subtitle">[Lead do artigo — 1 frase que contextualiza e convida à leitura.]</p>
+        <div class="hero-meta">
+          <span class="hero-meta-item">Stephany Palos</span>
+          <span class="hero-meta-dot"></span>
+          <!-- PREENCHER: mês e ano de publicação -->
+          <span class="hero-meta-item">[Mês de Publicação, 20XX]</span>
+          <span class="hero-meta-dot"></span>
+          <!-- PREENCHER: tempo estimado de leitura -->
+          <span class="hero-meta-item">[X] min de leitura</span>
+        </div>
+        <div class="article-tags-hero">
+          <!-- PREENCHER: tags do artigo (de 1 a 4) -->
+          <span class="article-tag">[Tag 1]</span>
+          <span class="article-tag">[Tag 2]</span>
+          <span class="article-tag">[Tag 3]</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ARTICLE LAYOUT — corpo + sidebar
+  ============================================================ -->
+  <div class="wrap-full">
+    <div class="article-layout">
+
+      <!-- ============================================================
+           CORPO DO ARTIGO
+      ============================================================ -->
+      <article class="article-body" id="articleBody">
+
+        <!-- OPCIONAL: Imagem de capa interna -->
+        <div class="article-cover reveal">
+          <!--
+            IMAGEM DE CAPA:
+            Descomente e preencha o src abaixo para adicionar imagem de capa.
+            <img src="../assets/artigo-capa.jpg" alt="[Descrição da imagem]" />
+          -->
+          <div class="article-cover-placeholder">
+            Imagem de capa (opcional)<br/>
+            <small>Substitua este bloco por &lt;img src="../assets/sua-imagem.jpg"&gt;</small>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             SEÇÃO 1
+             Instrução: cada <h2> vira um item do sumário lateral (ToC) automaticamente.
+             Mantenha o formato: id="section-[nome]" para o JS funcionar.
+        ============================================================ -->
+        <h2 id="section-intro">
+          <!-- PREENCHER: título da primeira seção -->
+          [Título da Seção 1 — ex: O contexto do problema]
+        </h2>
+
+        <p>
+          <!-- PREENCHER: Parágrafo de abertura — será renderizado em itálico e maior, como lead.
+               1-2 frases que resumem o ponto central do artigo. -->
+          [Parágrafo de abertura do artigo — o primeiro parágrafo será destacado automaticamente em fonte maior e itálico.]
+        </p>
+
+        <p>
+          <!-- PREENCHER: Desenvolvimento da seção -->
+          [Segundo parágrafo da seção. Desenvolva o argumento central. Use linguagem direta, pessoal e com ponto de vista claro. Evite parágrafos muito longos — quebre em 3-4 frases.]
+        </p>
+
+        <!-- OPCIONAL: Insight/destaque -->
+        <div class="insight">
+          <p>[Destaque uma ideia central do artigo neste bloco. Funciona como pullquote visual dentro do texto.]</p>
+        </div>
+
+        <p>[Continue o desenvolvimento da seção 1.]</p>
+
+        <!-- ============================================================
+             SEÇÃO 2
+        ============================================================ -->
+        <h2 id="section-desenvolvimento">
+          [Título da Seção 2]
+        </h2>
+
+        <p>[Abertura da seção 2.]</p>
+
+        <p>[Desenvolvimento.]</p>
+
+        <!-- OPCIONAL: Lista -->
+        <ul>
+          <li>[Item 1 da lista]</li>
+          <li>[Item 2 da lista]</li>
+          <li>[Item 3 da lista]</li>
+        </ul>
+
+        <!-- OPCIONAL: Imagem dentro do artigo -->
+        <figure>
+          <!--
+            INSTRUÇÃO: substitua o bloco abaixo por uma imagem real:
+            <img src="../assets/imagem-artigo.jpg" alt="Descrição" />
+          -->
+          <div class="article-cover" style="aspect-ratio: 4/3; margin-bottom: 0;">
+            <div class="article-cover-placeholder">
+              Imagem de apoio<br/><small>Diagrama, print, ilustração ou foto</small>
+            </div>
+          </div>
+          <figcaption>[Legenda da imagem — descreva o que o leitor está vendo]</figcaption>
+        </figure>
+
+        <!-- ============================================================
+             SEÇÃO 3
+        ============================================================ -->
+        <h2 id="section-argumentos">
+          [Título da Seção 3]
+        </h2>
+
+        <p>[Desenvolvimento da seção 3.]</p>
+
+        <!-- OPCIONAL: Citação externa -->
+        <blockquote>
+          "[PREENCHER: citação de referência externa, de alguém da área ou de uma fonte confiável]"
+          <cite>— [Nome / Fonte]</cite>
+        </blockquote>
+
+        <p>[Continuação após a citação — o que você pensa sobre ela.]</p>
+
+        <!-- ============================================================
+             SEÇÃO 4 — Conclusão
+        ============================================================ -->
+        <h2 id="section-conclusao">
+          [Título da Seção Final — ex: O que fica]
+        </h2>
+
+        <p>[Parágrafo de encerramento — recapitule o ponto central e deixe uma ideia que o leitor leva consigo.]</p>
+
+        <hr />
+
+        <!-- Nav entre artigos -->
+        <div class="article-nav">
+          <!-- PREENCHER: artigo anterior -->
+          <a href="article-template.html" class="article-nav-item">
+            <div class="article-nav-dir">← Artigo Anterior</div>
+            <div class="article-nav-title">[Título do Artigo Anterior]</div>
+          </a>
+          <!-- PREENCHER: próximo artigo -->
+          <a href="article-template.html" class="article-nav-item next">
+            <div class="article-nav-dir">Próximo Artigo →</div>
+            <div class="article-nav-title">[Título do Próximo Artigo]</div>
+          </a>
+        </div>
+
+        <!-- Rodapé do artigo — autora -->
+        <div class="article-footer">
+          <div class="article-author">
+            <div class="author-avatar">
+              <!--
+                FOTO: substitua pelo src da sua foto:
+                <img src="../assets/foto-stephany.jpg" alt="Stephany Palos" onerror="this.style.display='none'" />
+              -->
+              <span class="author-avatar-fallback">SP</span>
+            </div>
+            <div>
+              <div class="author-name">Stephany Palos</div>
+              <div class="author-role">UX &amp; Product Designer</div>
+              <div class="author-links">
+                <a href="https://www.linkedin.com/in/stephany-palos-ux-designer/" target="_blank" rel="noopener" class="author-link">LinkedIn</a>
+                <a href="https://medium.com/@stephanypalos" target="_blank" rel="noopener" class="author-link">Medium</a>
+                <a href="../index.html" class="author-link">Portfólio</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </article><!-- /article-body -->
+
+      <!-- ============================================================
+           SIDEBAR
+      ============================================================ -->
+      <aside class="sidebar" id="sidebar">
+
+        <!-- Bloco: Sobre a autora -->
+        <div class="sidebar-block reveal">
+          <div class="sidebar-block-header">
+            <div class="sidebar-block-title">✦ Sobre a Autora</div>
+          </div>
+          <div class="sidebar-block-body">
+            <div class="sidebar-author">
+              <div class="sidebar-author-avatar">
+                <!--
+                  FOTO: <img src="../assets/foto-stephany.jpg" alt="SP" onerror="this.style.display='none'" />
+                -->
+                <span style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 600; color: var(--color-ochre);">SP</span>
+              </div>
+              <div>
+                <div class="sidebar-author-name">Stephany Palos</div>
+                <div class="sidebar-author-role">UX &amp; Product Designer</div>
+              </div>
+            </div>
+            <p class="sidebar-author-bio">
+              Designer de produto com foco em discovery, estratégia e entrega. Escrevo sobre processo, decisões de design e o que aprendo construindo produtos reais.
+            </p>
+            <a href="https://www.linkedin.com/in/stephany-palos-ux-designer/" target="_blank" rel="noopener" class="sidebar-linkedin">
+              LinkedIn →
+            </a>
+          </div>
+        </div>
+
+        <!-- Bloco: Sumário do artigo (ToC) -->
+        <div class="sidebar-block reveal reveal-delay-1" id="tocBlock">
+          <div class="sidebar-block-header">
+            <div class="sidebar-block-title">Neste Artigo</div>
+          </div>
+          <div class="sidebar-block-body">
+            <ul class="toc-list" id="tocList">
+              <!-- Preenchido automaticamente via JS -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bloco: Índice de artigos -->
+        <div class="sidebar-block reveal reveal-delay-2">
+          <div class="sidebar-block-header">
+            <div class="sidebar-block-title">Mais Artigos</div>
+          </div>
+          <div class="sidebar-block-body">
+            <ul class="article-index-list">
+
+              <!-- PREENCHER: liste os artigos publicados aqui.
+                   O artigo atual deve ter class="article-index-link active"
+                   Os outros são links normais. -->
+
+              <li class="article-index-item">
+                <a href="article-design-system-ia.html" class="article-index-link">
+                  Design System, IA e a importância de dar contexto para a máquina
+                </a>
+                <div class="article-index-meta">Design · Jan 2025</div>
+              </li>
+              <li class="article-index-item">
+                <a href="article-handoff-contexto.html" class="article-index-link">
+                  Handoff não é entrega de tela: é alinhamento de contexto
+                </a>
+                <div class="article-index-meta">Research · 2025</div>
+              </li>
+              <li class="article-index-item">
+                <a href="article-portfolio-produto.html" class="article-index-link">
+                  Portfólio de produto: menos volume, mais raciocínio
+                </a>
+                <div class="article-index-meta">Portfolio · 2024</div>
+              </li>
+              <!-- Adicione mais artigos aqui conforme publicar -->
+
+            </ul>
+            <a href="../articles.html" class="btn-ghost" style="margin-top:1.2rem; width:100%; justify-content:center; font-size:0.62rem;">
+              Ver todos →
+            </a>
+          </div>
+        </div>
+
+        <!-- Bloco: Portfólio -->
+        <div class="sidebar-block reveal reveal-delay-2">
+          <div class="sidebar-block-header">
+            <div class="sidebar-block-title">Work</div>
+          </div>
+          <div class="sidebar-block-body" style="display:flex; flex-direction:column; gap:0.8rem;">
+            <p style="font-size:var(--text-small); color:var(--text-secondary); line-height:1.6;">
+              Cases de produto, process e estratégia de design.
+            </p>
+            <a href="../index.html#work" class="btn-ghost" style="width:100%; justify-content:center; font-size:0.62rem;">
+              Ver Portfólio →
+            </a>
+          </div>
+        </div>
+
+      </aside>
+    </div><!-- /article-layout -->
+  </div>
+
+  <!-- ============================================================
+       ARTIGOS RELACIONADOS
+  ============================================================ -->
+  <section class="related">
+    <div class="wrap-full">
+      <div class="related-header reveal">
+        <div class="related-label">✦ Continue Lendo</div>
+        <h2 class="related-title">Artigos Relacionados</h2>
+      </div>
+      <div class="related-grid">
+        <!-- PREENCHER: substitua pelos artigos mais relacionados ao artigo atual -->
+        <a href="article-design-system-ia.html" class="article-card reveal">
+          <div class="article-date">Design · 2025</div>
+          <h3 class="article-title">Design System, IA e a importância de dar contexto para a máquina</h3>
+          <p class="article-excerpt">Reflexão sobre como prompts e padrões influenciam interfaces geradas com apoio de IA.</p>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+        <a href="article-handoff-contexto.html" class="article-card reveal reveal-delay-1">
+          <div class="article-date">Research · 2025</div>
+          <h3 class="article-title">Handoff não é entrega de tela: é alinhamento de contexto</h3>
+          <p class="article-excerpt">Especificações, critérios de QA, regras de negócio e decisões que precisam acompanhar uma interface.</p>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+        <a href="article-portfolio-produto.html" class="article-card reveal reveal-delay-2">
+          <div class="article-date">Portfolio · 2024</div>
+          <h3 class="article-title">Portfólio de produto: menos volume, mais raciocínio</h3>
+          <p class="article-excerpt">Como apresentar contexto, problema, decisão e impacto sem depender apenas de telas finais.</p>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap-full">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Stephany <span>Palos</span></div>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
+        </div>
+        <div class="footer-copy">© 2025 Stephany Palos</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Reading progress bar
+    const bar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (scrollTop / docH * 100) + '%';
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.10, rootMargin: '0px 0px -30px 0px' }
+    );
+    reveals.forEach(el => obs.observe(el));
+
+    // Auto-generate ToC from h2 headings
+    const headings = document.querySelectorAll('.article-body h2');
+    const tocList = document.getElementById('tocList');
+    if (tocList && headings.length > 0) {
+      headings.forEach((h, i) => {
+        const li = document.createElement('li');
+        li.className = 'toc-item';
+        const a = document.createElement('a');
+        a.className = 'toc-link';
+        a.href = '#' + h.id;
+        a.innerHTML = `<span class="toc-num">0${i+1}</span>${h.textContent.trim()}`;
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+    } else if (tocList) {
+      document.getElementById('tocBlock').style.display = 'none';
+    }
+
+    // Active ToC link on scroll
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const headingObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tocLinks.forEach(l => l.classList.remove('active'));
+            const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+            if (active) active.classList.add('active');
+          }
+        });
+      },
+      { threshold: 0.5, rootMargin: '-10% 0px -60% 0px' }
+    );
+    headings.forEach(h => headingObserver.observe(h));
+  </script>
+
+</body>
+</html>

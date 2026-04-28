@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contratação de Serviços no Onboarding — Case Study por Stephany Palos, UX & Product Designer." />
+  <meta name="keywords" content="UX Case Study, Product Design, Stephany Palos, B3, Market Data, iMercado, Contratação de Serviços, UX Design, B2B" />
+  <meta name="author" content="Stephany Palos" />
+  <meta property="og:title" content="Contratação de Serviços no Onboarding — Case Study · Stephany Palos" />
+  <meta property="og:description" content="Estruturação de fluxos de contratação de serviços no Onboarding B3, contemplando Market Data e iMercado." />
+  <meta property="og:type" content="article" />
+  <title>Contratação de Serviços no Onboarding — Case Study · Stephany Palos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS (espelhados do portfólio principal)
+    ============================================================ */
+    :root {
+      --color-pine: #1F2B24;
+      --color-moss: #55624B;
+      --color-charcoal: #121212;
+      --color-bone: #EEE7D6;
+      --color-ochre: #B6945A;
+      --color-sage: #A5B08F;
+      --color-mist-green: #D7DDCC;
+      --color-bark: #2B241F;
+      --color-moon-dust: #CFC5AF;
+
+      --bg-primary: #0E0E0C;
+      --bg-secondary: var(--color-pine);
+      --bg-surface: #171715;
+      --bg-card: #1C1C19;
+
+      --text-primary: var(--color-bone);
+      --text-secondary: var(--color-moon-dust);
+      --text-muted: rgba(238,231,214,0.55);
+
+      --border-primary: rgba(182,148,90,0.40);
+      --border-soft: rgba(238,231,214,0.09);
+
+      --accent: var(--color-ochre);
+
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-accent: 'Cormorant Garamond', serif;
+
+      --text-hero: clamp(2.4rem, 6vw, 4.8rem);
+      --text-h2: clamp(1.5rem, 3vw, 2.2rem);
+      --text-h3: clamp(1.1rem, 2vw, 1.4rem);
+      --text-body-lg: 1.125rem;
+      --text-body: 1rem;
+      --text-small: 0.875rem;
+      --text-caption: 0.75rem;
+
+      --lh-tight: 1.15;
+      --lh-body: 1.75;
+
+      --ls-display: 0.05em;
+      --ls-heading: 0.03em;
+      --ls-small: 0.13em;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-card: 0 16px 48px rgba(0,0,0,0.34);
+
+      --container: 760px;       /* body text column */
+      --container-wide: 1100px; /* media / full-bleed */
+      --container-max: 1260px;
+
+      --transition: 260ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: var(--lh-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-wrap: break-word;
+    }
+    ::selection { background: rgba(182,148,90,0.25); color: var(--color-bone); }
+    img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+    a { color: inherit; text-decoration: none; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 900;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .wrap        { width: 100%; max-width: var(--container);      margin: 0 auto; padding: 0 clamp(1.25rem,5vw,2.5rem); }
+    .wrap-wide   { width: 100%; max-width: var(--container-wide); margin: 0 auto; padding: 0 clamp(1.25rem,5vw,3rem); }
+    .wrap-full   { width: 100%; max-width: var(--container-max);  margin: 0 auto; padding: 0 clamp(1.25rem,5vw,5rem); }
+
+    .section     { padding: clamp(4rem,8vw,7rem) 0; }
+    .section-sm  { padding: clamp(2.5rem,5vw,4rem) 0; }
+
+    .label {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin: clamp(3rem,6vw,5rem) 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border-soft); }
+    .divider-icon { color: var(--accent); font-size: 0.7rem; flex-shrink: 0; }
+
+    /* ============================================================
+       PLACEHOLDER (hint boxes shown in template mode)
+    ============================================================ */
+    .ph {
+      border: 1.5px dashed rgba(182,148,90,0.35);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      font-size: var(--text-small);
+      color: rgba(182,148,90,0.65);
+      font-style: italic;
+      background: rgba(182,148,90,0.04);
+      margin: 0.5rem 0;
+    }
+    .ph-img {
+      aspect-ratio: 16/9;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      text-align: center;
+      border: 1.5px dashed rgba(182,148,90,0.30);
+      border-radius: var(--radius-md);
+      background: rgba(31,43,36,0.25);
+      color: rgba(182,148,90,0.50);
+      font-size: var(--text-small);
+      font-style: italic;
+      padding: 1rem;
+    }
+    .ph-img-tall { aspect-ratio: 4/3; }
+    .ph-img-sq   { aspect-ratio: 1/1; }
+    .ph-icon { font-size: 2rem; opacity: 0.5; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 0;
+      transition: background var(--transition), backdrop-filter var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(14,14,12,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-width: 0;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+    .nav-back:hover { color: var(--accent); }
+    .nav-back-arrow { font-size: 0.8rem; }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-progress {
+      width: 80px;
+      flex: 0 0 80px;
+      height: 2px;
+      background: var(--border-soft);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .nav-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       CASE HERO
+    ============================================================ */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(7rem, 14vh, 9rem) 0 clamp(3rem, 7vh, 4.5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+      /* INSTRUÇÃO: substitua este elemento por uma imagem real do projeto */
+    }
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, transparent 0%, rgba(14,14,12,0.4) 50%, var(--bg-primary) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31,43,36,0.50) 0%, transparent 60%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+      min-width: 0;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      min-width: 0;
+    }
+    .hero-eyebrow-line { width: 36px; height: 1px; background: var(--border-primary); }
+    .hero-category {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 600;
+      letter-spacing: var(--ls-display);
+      line-height: var(--lh-tight);
+      color: var(--color-bone);
+      margin-bottom: 1rem;
+      max-width: 12ch;
+      overflow-wrap: anywhere;
+    }
+    .hero-tagline {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+    .hero-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 1.4rem 2rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-meta-item { min-width: 0; }
+    .hero-meta-label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .hero-meta-value {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+      overflow-wrap: anywhere;
+    }
+
+    .hero-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+    .hero-scroll-text {
+      font-size: 0.62rem;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hero-scroll-line {
+      width: 36px;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+    }
+
+    /* ============================================================
+       OVERVIEW / BRIEF
+    ============================================================ */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .overview-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      transition: border-color var(--transition);
+    }
+    .stat-box:hover { border-color: var(--border-primary); }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+    .stat-context {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY ELEMENTS
+    ============================================================ */
+    .section-label { margin-bottom: 0.6rem; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+      margin-bottom: 1.5rem;
+    }
+    .body-lg {
+      font-family: var(--font-accent);
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+    .body-text {
+      font-size: var(--text-body);
+      color: var(--text-secondary);
+      line-height: var(--lh-body);
+    }
+    .body-text + .body-text { margin-top: 1.2rem; }
+
+    blockquote.pull-quote {
+      border-left: 2px solid var(--accent);
+      padding: 1rem 1.5rem;
+      margin: 2.5rem 0;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+      color: var(--color-bone);
+      line-height: 1.65;
+    }
+    blockquote.pull-quote cite {
+      display: block;
+      font-style: normal;
+      font-size: var(--text-caption);
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    .insight-box {
+      background: rgba(31,43,36,0.55);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 2rem;
+      position: relative;
+    }
+    .insight-box::before {
+      content: '✦';
+      position: absolute;
+      top: -0.6rem;
+      left: 1.8rem;
+      background: var(--bg-primary);
+      padding: 0 0.4rem;
+      color: var(--accent);
+      font-size: 0.7rem;
+    }
+    .insight-box-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    /* ============================================================
+       PROCESS TRACKER (sticky sidebar indicator)
+    ============================================================ */
+    .process-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: clamp(3rem, 5vw, 5rem);
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    .process-track::-webkit-scrollbar { display: none; }
+    .pt-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 100px;
+      position: relative;
+      cursor: pointer;
+    }
+    .pt-step::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 16px);
+      right: calc(-50% + 16px);
+      height: 1px;
+      background: var(--border-soft);
+    }
+    .pt-step:last-child::after { display: none; }
+    .pt-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-soft);
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      transition: all var(--transition);
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .pt-step.active .pt-dot {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(182,148,90,0.12);
+      box-shadow: 0 0 0 4px rgba(182,148,90,0.08);
+    }
+    .pt-step.done .pt-dot {
+      border-color: var(--color-moss);
+      color: var(--color-sage);
+      background: rgba(85,98,75,0.15);
+    }
+    .pt-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .pt-step.active .pt-label { color: var(--accent); }
+
+    /* ============================================================
+       PHASE HEADERS
+    ============================================================ */
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .phase-badge {
+      width: 52px;
+      height: 52px;
+      border: 1.5px solid var(--border-primary);
+      border-radius: 8px;
+      transform: rotate(45deg);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.06);
+      flex-shrink: 0;
+    }
+    .phase-badge-inner { transform: rotate(-45deg); font-size: 1.1rem; }
+    .phase-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+    }
+    .phase-desc {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .cards-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      transition: border-color var(--transition);
+      min-width: 0;
+    }
+    .card:hover { border-color: var(--border-primary); }
+    .card-icon { font-size: 1.2rem; margin-bottom: 0.8rem; }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      margin-bottom: 0.5rem;
+    }
+    .card-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Finding / research card */
+    .finding {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1.2rem 1.4rem;
+    }
+    .finding + .finding { margin-top: 0.6rem; }
+    .finding-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .finding-text {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Persona card */
+    .persona-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .persona-header {
+      background: var(--color-pine);
+      padding: 1.8rem 1.8rem 1.2rem;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .persona-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-primary);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.10);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .persona-name {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .persona-role {
+      font-size: var(--text-caption);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+    .persona-quote {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+    .persona-body { padding: 1.4rem 1.8rem; }
+    .persona-section-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .persona-list li {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .persona-list li::before {
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-sage);
+      flex-shrink: 0;
+      margin-top: 0.55rem;
+    }
+
+    /* HMW tags */
+    .hmw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .hmw-tag {
+      font-size: var(--text-small);
+      color: var(--color-bone);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      line-height: 1.4;
+    }
+    .hmw-tag strong {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       IMAGES / MEDIA
+    ============================================================ */
+    .img-full {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+    }
+    .img-caption {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.7rem;
+      letter-spacing: 0.05em;
+      font-style: italic;
+    }
+    .imgs-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+    .imgs-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .img-with-caption {}
+
+    /* ============================================================
+       TOOLS & TAGS
+    ============================================================ */
+    .tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tool-tag {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    /* ============================================================
+       ITERATION / BEFORE-AFTER
+    ============================================================ */
+    .iteration-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .iteration-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .iteration-col {
+      padding: 0.8rem 1.2rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .iteration-col.before {
+      background: rgba(43,36,31,0.60);
+      color: var(--text-muted);
+      border-right: 1px solid var(--border-soft);
+    }
+    .iteration-col.after {
+      background: rgba(31,43,36,0.50);
+      color: var(--color-sage);
+    }
+    .iteration-imgs {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      border-top: 1px solid var(--border-soft);
+    }
+    .iteration-imgs > div { padding: 1.2rem; }
+    .iteration-imgs > div:first-child { border-right: 1px solid var(--border-soft); }
+
+    /* ============================================================
+       RESULTS / IMPACT
+    ============================================================ */
+    .results-bg {
+      background: var(--color-pine);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-primary);
+      padding: clamp(2.5rem, 5vw, 4rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .results-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .results-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(85,98,75,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+      margin-top: 2.5rem;
+    }
+    .result-item { text-align: center; }
+    .result-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .result-label {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .result-context {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       LEARNINGS
+    ============================================================ */
+    .learning-item {
+      display: flex;
+      gap: 1.2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .learning-item:last-child { border-bottom: none; }
+    .learning-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      color: var(--accent);
+      padding-top: 0.1rem;
+      min-width: 24px;
+    }
+    .learning-content {}
+    .learning-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--color-bone);
+      margin-bottom: 0.4rem;
+    }
+    .learning-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       CASE NAVIGATION
+    ============================================================ */
+    .case-nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      margin-top: clamp(3rem, 6vw, 5rem);
+    }
+    .case-nav-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .case-nav-item:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-2px);
+    }
+    .case-nav-item.next { text-align: right; }
+    .case-nav-dir {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .case-nav-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .case-nav-arrow { font-size: 1.2rem; color: var(--accent); }
+
+    /* Back to portfolio */
+    .back-section {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 0;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-bark);
+      border-top: 1px solid var(--border-soft);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--color-bone);
+      color: var(--color-charcoal);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      border: 1px solid var(--color-bone);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-primary);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--color-bone);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition);
+    }
+    .btn-ghost:hover {
+      background: rgba(182,148,90,0.10);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 860px) {
+      .hero { min-height: auto; padding-top: 7rem; }
+      .nav-progress { width: 56px; flex-basis: 56px; }
+      .overview-grid      { grid-template-columns: 1fr; }
+      .overview-stat-row  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards-2,
+      .cards-3            { grid-template-columns: 1fr; }
+      .imgs-2,
+      .imgs-3             { grid-template-columns: 1fr; }
+      .results-grid       { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .iteration-header,
+      .iteration-imgs     { grid-template-columns: 1fr; }
+      .iteration-col.before { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .iteration-imgs > div:first-child { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .case-nav           { grid-template-columns: 1fr; }
+      .case-nav-item.next { text-align: left; }
+      .hero-meta-strip    { gap: 1.2rem; }
+      .hero-title { max-width: 14ch; }
+    }
+
+    @media (max-width: 560px) {
+      :root { --text-hero: clamp(2rem, 13vw, 3.2rem); }
+      .wrap, .wrap-wide, .wrap-full { padding-inline: 1.1rem; }
+      .nav-back { font-size: 0.62rem; }
+      .nav-logo { font-size: 0.68rem; letter-spacing: 0.03em; }
+      .nav-progress { display: none; }
+      .hero { padding-top: 6.2rem; padding-bottom: 2.4rem; }
+      .hero-eyebrow { gap: 0.7rem; margin-bottom: 1.2rem; }
+      .hero-eyebrow-line { width: 24px; flex-shrink: 0; }
+      .hero-title { max-width: 100%; letter-spacing: 0.035em; }
+      .hero-tagline { margin-bottom: 1.8rem; }
+      .hero-meta-strip { grid-template-columns: 1fr; gap: 1rem; }
+      .overview-stat-row { grid-template-columns: 1fr; }
+      .results-grid      { grid-template-columns: 1fr; }
+      .phase-header      { flex-direction: column; gap: 1rem; }
+      .process-track { margin-inline: -1.1rem; padding-inline: 1.1rem; }
+      .pt-step { min-width: 86px; }
+      .results-bg { padding: 2rem 1.2rem; }
+      .card, .stat-box, .case-nav-item { padding: 1.25rem; }
+      .insight-box { padding: 1.35rem; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+  </style>
+</head>
+
+<body>
+<nav class="nav" id="nav">
+    <div class="wrap-full">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <span class="nav-back-arrow">←</span> Portfólio
+        </a>
+        <a href="../index.html" class="nav-logo">Stephany <span>Palos</span></a>
+        <div class="nav-progress" title="Progresso de leitura">
+          <div class="nav-progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+<section class="hero">
+    <div class="hero-bg">
+<div class="hero-bg-img" style="background: linear-gradient(135deg, #1a2618 0%, var(--color-pine) 50%, #2b1f1a 100%);"></div>
+      <div class="hero-bg-gradient"></div>
+    </div>
+    <div class="wrap-full">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+<span class="hero-category">B3 · Serviços B2B · Case Study</span>
+        </div>
+<h1 class="hero-title">Contratação de Serviços no Onboarding</h1>
+<p class="hero-tagline">Estruturação de fluxos para contratação de serviços dentro do Onboarding, conectando necessidade do cliente, operação e regras de negócio.</p>
+      </div>
+      <div class="hero-meta-strip">
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Empresa</div>
+<div class="hero-meta-value">B3</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Meu Papel</div>
+<div class="hero-meta-value">Product Designer Sênior</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Duração</div>
+<div class="hero-meta-value">Atuação evolutiva</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ano</div>
+<div class="hero-meta-value">2025–2026</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Plataforma</div>
+<div class="hero-meta-value">Web App B2B</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ferramentas</div>
+<div class="hero-meta-value">Figma · Jira · Alinhamentos técnicos</div>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-text">Continue lendo</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </div>
+  </section>
+<section class="section">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">✦ Visão Geral</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">O projeto em síntese</h2>
+      </div>
+
+      <div class="overview-grid reveal reveal-delay-1">
+        <div>
+<p class="body-lg">A frente de Contratação de Serviços expandiu o papel do Onboarding B3 para além do cadastro, incluindo jornadas relacionadas a produtos como Market Data e iMercado. O contexto envolvia clientes externos, operação interna e regras específicas para solicitação, aprovação, devolução e acompanhamento.</p>
+<p class="body-text" style="margin-top:1.4rem;">O desafio era organizar fluxos complexos sem transformar a interface em uma sequência confusa de exceções. As jornadas precisavam comportar diferentes estados, perfis, ações operacionais e dependências entre cliente, operador e contrato.</p>
+<p class="body-text" style="margin-top:1rem;">Atuei na estruturação de fluxos, telas e decisões de UI para a contratação e gestão desses serviços, traduzindo regras e necessidades operacionais em experiências mais previsíveis para clientes e times internos.</p>
+        </div>
+
+        <div>
+<div class="ph-img">
+            <span class="ph-icon">🖼</span>
+            <span>Espaço para fluxo de contratação ou tela do serviço<br/><small>Inserir print anonimizado</small></span>
+          </div>
+          <p class="img-caption">Sugestão: fluxo de Market Data/iMercado ou visão de acompanhamento da solicitação.</p>
+        </div>
+      </div>
+<div class="overview-stat-row reveal reveal-delay-2">
+        <div class="stat-box">
+<div class="stat-value">Market Data + iMercado</div>
+          <div class="stat-label">Serviços contemplados</div>
+          <div class="stat-context">Jornadas de contratação e acompanhamento dentro do Onboarding.</div>
+        </div>
+        <div class="stat-box">
+<div class="stat-value">Cliente + operador</div>
+          <div class="stat-label">Perfis considerados</div>
+          <div class="stat-context">Fluxos pensados para solicitação externa e tratamento interno.</div>
+        </div>
+        <div class="stat-box">
+<div class="stat-value">Regras e estados</div>
+          <div class="stat-label">Complexidade</div>
+          <div class="stat-context">Decisões de interface orientadas por status, permissões e ações disponíveis.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+<div class="wrap-wide">
+    <div class="process-track reveal">
+      <div class="pt-step done">
+        <div class="pt-dot">◎</div>
+        <span class="pt-label">Discover</span>
+      </div>
+      <div class="pt-step done">
+        <div class="pt-dot">◈</div>
+        <span class="pt-label">Define</span>
+      </div>
+      <div class="pt-step active">
+        <div class="pt-dot">✦</div>
+        <span class="pt-label">Develop</span>
+      </div>
+      <div class="pt-step">
+        <div class="pt-dot">⟡</div>
+        <span class="pt-label">Deliver</span>
+      </div>
+      <div class="pt-step">
+        <div class="pt-dot">◉</div>
+        <span class="pt-label">Validate</span>
+      </div>
+    </div>
+  </div>
+<section class="section" style="background: var(--bg-surface);" id="challenge">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Contexto</div>
+          <h2 class="phase-title">O Desafio</h2>
+          <p class="phase-desc">O problema que motivou o projeto e as restrições que moldaram nossa abordagem.</p>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Problem Statement</div>
+<div class="card-body">Clientes e operadores precisavam acompanhar contratos, pendências e ações de forma clara. O risco era criar uma jornada tecnicamente correta, mas difícil de operar por excesso de estados, ações pouco evidentes e regras distribuídas em vários pontos.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Objetivo do Projeto</div>
+<div class="card-body">Estruturar uma experiência de contratação de serviços que fosse compreensível para o cliente, operacionalmente viável para o time interno e aderente às regras específicas de produtos como Market Data e iMercado.</div>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-2" style="margin-top:1rem;">
+        <div class="card">
+          <div class="card-icon">🧑‍💻</div>
+          <div class="card-title">Meu Papel</div>
+<div class="card-body">Atuei na organização de fluxos, criação de telas, revisão de estados, modais, ações globais e comportamento de interface. Também participei de discussões com produto, desenvolvimento e arquitetura para ajustar a solução à viabilidade técnica.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Time & Colaboração</div>
+<div class="card-body">Colaboração com squads do Onboarding, stakeholders de negócio, pessoas da operação e desenvolvimento. A frente exigiu conversas constantes para transformar regras de contratação em fluxos claros.</div>
+        </div>
+      </div>
+<div class="insight-box reveal reveal-delay-3" style="margin-top:2rem;">
+        <div class="insight-box-label">Restrições do Projeto</div>
+<p class="body-text">As decisões precisavam respeitar regras de negócio, permissões por perfil, histórico de solicitação, status de contrato e limitações técnicas. Algumas soluções dependiam de validação com arquitetura e backend antes de serem consolidadas.</p>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="discover">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Fase 01 · Discover</div>
+          <h2 class="phase-title">Pesquisa & Descoberta</h2>
+          <p class="phase-desc">Entendendo o usuário real, o contexto de uso e os padrões que o mercado já estabeleceu.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Métodos de Research</span>
+        <div class="tools-row" style="margin-top:0.8rem;">
+          <span class="tool-tag">Mapeamento de Fluxos</span>
+          <span class="tool-tag">Entendimento Operacional</span>
+          <span class="tool-tag">Revisão de Regras</span>
+          <span class="tool-tag">Análise Heurística</span>
+          <span class="tool-tag">Alinhamento Técnico</span>
+        </div>
+      </div>
+<div style="margin-top:2rem;" class="reveal reveal-delay-1">
+<p class="body-lg">A descoberta aconteceu principalmente pelo entendimento dos fluxos existentes, análise de necessidades operacionais, revisão de regras e discussões com stakeholders sobre como cada ação deveria se comportar em diferentes estados da solicitação.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:2rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">📋</span>
+              <span>Mapeamento de estados e ações</span>
+            </div>
+            <p class="img-caption">Organização de possibilidades como aprovar, cancelar, devolver e reenviar contrato.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">📊</span>
+              <span>Fluxo cliente e operador</span>
+            </div>
+            <p class="img-caption">Visão comparativa entre solicitação externa e tratamento interno.</p>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Principais Achados</span>
+        <div style="margin-top:1rem;">
+<div class="finding">
+            <div class="finding-num">Achado 01</div>
+            <div class="finding-text">A clareza dos estados era tão importante quanto a própria tela: o usuário precisava entender o que estava pendente, aprovado, devolvido ou cancelado.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 02</div>
+            <div class="finding-text">A operação precisava de ações globais em pontos previsíveis, especialmente em fluxos de aprovação e cancelamento.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 03</div>
+            <div class="finding-text">Havia necessidade de diferenciar ações do cliente e ações do operador para evitar ambiguidade sobre responsabilidade e próximo passo.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 04</div>
+            <div class="finding-text">Detalhes como modais de confirmação, histórico/timeline e reenvio de contrato tinham impacto direto na segurança operacional.</div>
+          </div>
+        </div>
+      </div>
+<blockquote class="pull-quote reveal reveal-delay-2">
+        "Síntese do diagnóstico: em uma contratação B2B, a interface precisa deixar claro não só o que pode ser feito, mas quem pode fazer e em qual momento."
+        <cite>— Insight sintetizado a partir do mapeamento de regras</cite>
+      </blockquote>
+<div class="reveal reveal-delay-1" style="margin-top:1rem;">
+        <span class="label">Benchmark Competitivo</span>
+        <p class="body-text" style="margin-top:0.8rem;">O benchmark foi direcionado a padrões de contratação B2B, gestão de solicitações, timelines e ações por status. A referência principal foi clareza operacional, não estética.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal">
+          <span class="ph-icon">🔍</span>
+          <span>Referências de fluxos B2B e gestão de solicitações</span>
+        </div>
+        <p class="img-caption">Padrões comparados para status, ações, confirmação e histórico.</p>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-secondary);" id="define">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◈</span></div>
+        <div>
+          <div class="phase-num">Fase 02 · Define</div>
+          <h2 class="phase-title">Síntese & Definição</h2>
+          <p class="phase-desc">Transformando dados brutos em clareza: quem é o usuário, o que ele realmente precisa e qual problema vale resolver.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Persona(s)</span>
+      </div>
+      <div class="cards-2 reveal reveal-delay-1" style="margin-top:1rem;">
+<div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">🧑</div>
+            <div>
+<div class="persona-name">Cliente solicitante</div>
+<div class="persona-role">Representante de participante B3</div>
+<div class="persona-quote">"Preciso saber o que falta para minha contratação avançar."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+<li>Solicitar serviços e acompanhar andamento com segurança.</li>
+              <li>Entender pendências, devoluções e próximos passos.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+<li>Não saber se uma solicitação está parada por erro, análise ou pendência.</li>
+              <li>Ações pouco claras geram medo de impactar o contrato.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+<li>Acompanha status e busca evidências de andamento.</li>
+              <li>Valoriza mensagens claras e confirmação antes de ações sensíveis.</li>
+            </ul>
+          </div>
+        </div>
+<div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">👩</div>
+            <div>
+              <div class="persona-name">Operador interno</div>
+              <div class="persona-role">Pessoa responsável por análise e tratamento</div>
+              <div class="persona-quote">"Preciso agir rápido, mas sem perder rastreabilidade."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+              <li>Analisar solicitações, aprovar, cancelar, devolver ou reenviar contratos.</li>
+              <li>Manter histórico claro das ações realizadas.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+              <li>Não saber se uma solicitação está parada por erro, análise ou pendência.</li>
+              <li>Ações pouco claras geram medo de impactar o contrato.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+              <li>Acompanha status e busca evidências de andamento.</li>
+              <li>Valoriza mensagens claras e confirmação antes de ações sensíveis.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+<div class="divider wrap">
+        <div class="divider-line"></div>
+        <span class="divider-icon">✦</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Mapa de Jornada</span>
+        <p class="body-text" style="margin-top:0.6rem;">A jornada revelou dois pontos críticos: a solicitação do cliente precisava ser guiada, enquanto a operação interna precisava de previsibilidade e controle. A oportunidade estava em conectar status, ações e histórico em uma experiência coerente para os dois lados.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🗺️</span>
+          <span>Jornada cliente-operador da contratação</span>
+        </div>
+        <p class="img-caption">Fluxo de solicitação, análise, aprovação, devolução e acompanhamento.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Insights Síntese</span>
+        <p class="body-text" style="margin-top:0.6rem;">A síntese organizou regras por perfil, status e ação possível. Esse recorte ajudou a transformar um fluxo com muitas condições em decisões de interface mais previsíveis.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">🗂️</span>
+              <span>Matriz de status, perfis e ações</span>
+            </div>
+            <p class="img-caption">Agrupamento de regras de negócio por momento da jornada.</p>
+          </div>
+          <div>
+<span class="label" style="margin-bottom:0.8rem; display:block;">Insights Priorizados</span>
+            <div class="finding">
+              <div class="finding-num">Insight 01</div>
+              <div class="finding-text">Em fluxos regulados, clareza de status reduz ansiedade e retrabalho.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 02</div>
+              <div class="finding-text">Ações sensíveis precisam de confirmação e linguagem objetiva para evitar erro operacional.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 03</div>
+              <div class="finding-text">Histórico e timeline funcionam como camada de confiança para cliente e operação.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">How Might We?</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.2rem;">As perguntas que guiaram a fase de ideação, derivadas diretamente dos insights de research.</p>
+        <div class="hmw-grid">
+          <div class="hmw-tag"><strong>HMW</strong> explicitar status e próximos passos sem sobrecarregar a tela?</div>
+          <div class="hmw-tag"><strong>HMW</strong> separar ações de cliente e operador de forma clara?</div>
+          <div class="hmw-tag"><strong>HMW</strong> garantir segurança em ações sensíveis como cancelar, aprovar ou devolver?</div>
+          <div class="hmw-tag"><strong>HMW</strong> usar histórico para aumentar rastreabilidade e confiança?</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="develop">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">✦</span></div>
+        <div>
+          <div class="phase-num">Fase 03 · Develop</div>
+          <h2 class="phase-title">Ideação & Prototipagem</h2>
+          <p class="phase-desc">Do problema à solução: explorando possibilidades antes de convergir no melhor caminho.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Processo de Ideação</span>
+<p class="body-text" style="margin-top:0.8rem;">A ideação partiu da combinação entre fluxos de estado, telas de acompanhamento e padrões de confirmação. As alternativas foram discutidas com o time para equilibrar clareza, viabilidade técnica e operação real.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-3 reveal reveal-delay-1">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">✏️</span>
+              <span>Variações de estados</span>
+            </div>
+            <p class="img-caption">Explorações para pendente, aprovado, devolvido e cancelado.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📐</span>
+              <span>Fluxo de contratação</span>
+            </div>
+            <p class="img-caption">Organização entre solicitação, análise e conclusão.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">🃏</span>
+              <span>Modais e ações globais</span>
+            </div>
+            <p class="img-caption">Decisões para confirmação, devolução e cancelamento.</p>
+          </div>
+        </div>
+      </div>
+<div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Wireframes</span>
+<p class="body-text" style="margin-top:0.8rem;">Os wireframes organizaram os momentos principais da contratação, incluindo visualização de dados, ações por perfil, estados e confirmações. O foco foi reduzir ambiguidade e apoiar a operação em decisões recorrentes.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1">
+          <span class="ph-icon">🔲</span>
+          <span>Wireframes dos fluxos de contratação</span>
+        </div>
+        <p class="img-caption">Telas de solicitação, análise, timeline e ações operacionais.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">User Flow Redesenhado</span>
+        <p class="body-text" style="margin-top:0.8rem;">O fluxo redesenhado separou melhor etapas de solicitação, análise interna, retorno ao cliente, aprovação e finalização. A estrutura também considerou casos de devolução, cancelamento e reenvio de contrato.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-2" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">→</span>
+          <span>Fluxograma de status e ações</span>
+        </div>
+        <p class="img-caption">Fluxo de contratação com estados, perfis e ações permitidas.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Decisões de Design</span>
+        <div class="cards-2" style="margin-top:1rem;">
+          <div class="card">
+            <div class="card-icon">💡</div>
+            <div class="card-title">Decisão 1: Ações globais em área previsível</div>
+<div class="card-body">Aprovar, cancelar e outras ações críticas foram pensadas em áreas consistentes para reduzir procura e aumentar segurança operacional.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔀</div>
+            <div class="card-title">Decisão 2: Timeline como evidência</div>
+            <div class="card-body">O histórico foi tratado como peça central para rastrear mudanças, justificar estados e dar confiança ao cliente e ao operador.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-surface);" id="deliver">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">⟡</span></div>
+        <div>
+          <div class="phase-num">Fase 04 · Deliver</div>
+          <h2 class="phase-title">Design Final</h2>
+          <p class="phase-desc">A solução construída: telas, interações e o sistema que a sustenta.</p>
+        </div>
+      </div>
+<div class="reveal">
+<p class="body-lg">A entrega contemplou telas e fluxos para contratação e acompanhamento de serviços, com atenção especial a estados, ações, modais de confirmação e histórico. O trabalho buscou tornar a operação mais segura e a jornada do cliente mais compreensível.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:2rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 16/10; min-height: 300px;">
+          <span class="ph-icon">🖥</span>
+          <span>Tela principal de contratação / acompanhamento</span>
+        </div>
+        <p class="img-caption">Visão da solicitação de serviço com status, informações e ações disponíveis.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:1rem;">
+        <div class="imgs-3 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>Timeline / histórico</span>
+            </div>
+            <p class="img-caption">Registro de eventos e mudanças de status.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>Modal de confirmação</span>
+            </div>
+            <p class="img-caption">Registro de eventos e mudanças de status.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>Visão operacional</span>
+            </div>
+            <p class="img-caption">Registro de eventos e mudanças de status.</p>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3.5rem;" class="reveal reveal-delay-1">
+        <span class="label">Evolução do Design</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.5rem;">A evolução principal foi transformar uma contratação com muitas regras distribuídas em uma experiência orientada por estados, permissões e próximos passos.</p>
+        <div class="iteration-block">
+          <div class="iteration-header">
+            <div class="iteration-col before">← Antes</div>
+            <div class="iteration-col after">Depois →</div>
+          </div>
+          <div class="iteration-imgs">
+            <div>
+              <div class="ph-img ph-img-sq">
+                <span class="ph-icon">🔴</span>
+                <span>Fluxo fragmentado</span>
+              </div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Regras e ações distribuídas, com maior risco de ambiguidade.</p>
+            </div>
+            <div>
+              <div class="ph-img ph-img-sq">
+                <span class="ph-icon">🟢</span>
+                <span>Fluxo estruturado</span>
+              </div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Estados, ações e histórico conectados em uma jornada mais previsível.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Design System & Componentes</span>
+        <p class="body-text" style="margin-top:0.6rem;">As telas utilizaram padrões e componentes existentes sempre que possível, com atenção a consistência de botões, modais, formulários, tabelas, tags de status e feedbacks.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🎨</span>
+          <span>Componentes aplicados nos fluxos de contratação</span>
+        </div>
+        <p class="img-caption">Uso de padrões para status, ações, modais, formulários e timeline.</p>
+      </div>
+<div class="insight-box reveal reveal-delay-1" style="margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+        <div>
+          <div class="insight-box-label">Protótipo Interativo</div>
+          <p class="body-text">Protótipo navegável dos fluxos de contratação e tratamento operacional. Link não incluído por confidencialidade.</p>
+        </div>
+<a href="#" target="_blank" rel="noopener" class="btn-ghost">Ver no Figma →</a>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="validate">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◉</span></div>
+        <div>
+          <div class="phase-num">Fase 05 · Validate</div>
+          <h2 class="phase-title">Teste & Validação</h2>
+          <p class="phase-desc">Colocando o design diante de usuários reais para confirmar hipóteses e descobrir o que ainda precisava melhorar.</p>
+        </div>
+      </div>
+<div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">Método de Teste</div>
+<div class="card-body">Validação por revisão com stakeholders, operação, desenvolvimento e arquitetura. O foco foi confirmar coerência das regras, estados e ações antes da consolidação visual.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Participantes</div>
+<div class="card-body">Stakeholders de negócio, operação e tecnologia envolvidos na contratação de serviços. Dados de usuários finais não são expostos.</div>
+        </div>
+      </div>
+<div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+        <span class="label">O que os testes revelaram</span>
+        <div style="margin-top:1rem;">
+<div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Funcionou</div>
+            <div class="finding-text">A separação por perfil ajudou a tornar responsabilidades mais claras.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Problema identificado</div>
+            <div class="finding-text">Algumas ações exigiam confirmação explícita para reduzir risco operacional.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Problema identificado</div>
+            <div class="finding-text">Estados e histórico se mostraram essenciais para explicar andamento e decisões.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Validado</div>
+            <div class="finding-text">A viabilidade técnica influenciou diretamente a priorização de comportamentos.</div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:2.5rem;" class="reveal reveal-delay-2">
+        <span class="label">Iterações Após o Teste</span>
+        <p class="body-text" style="margin-top:0.8rem;">As iterações ajustaram nomenclaturas, organização de ações, modais e tratamento de estados conforme feedback de negócio e tecnologia.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-3">
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">🔄</span>
+              <span>Primeiras hipóteses de fluxo</span>
+            </div>
+            <p class="img-caption">Estrutura inicial com oportunidades de clareza em status e ações.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">✅</span>
+              <span>Fluxo refinado por perfil e status</span>
+            </div>
+            <p class="img-caption">Jornada ajustada com permissões, confirmações e histórico.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-secondary);" id="results">
+    <div class="wrap">
+
+      <div class="reveal">
+        <span class="label">✦ Resultados</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Impacto & Métricas</h2>
+<p class="body-lg" style="margin-top:0.5rem;">Os resultados divulgáveis estão relacionados à estruturação da experiência e à redução de ambiguidade nos fluxos. Métricas internas de operação ou negócio não são apresentadas publicamente.</p>
+      </div>
+
+      <div class="results-bg reveal reveal-delay-1" style="margin-top:2rem;">
+        <div class="results-grid">
+<div class="result-item">
+            <div class="result-value">2 serviços</div>
+            <div class="result-label">Escopo citado</div>
+            <div class="result-context">Market Data e iMercado contemplados no contexto de contratação.</div>
+          </div>
+<div class="result-item">
+            <div class="result-value">2 perfis</div>
+            <div class="result-label">Cliente e operador</div>
+            <div class="result-context">Fluxos pensados para necessidades externas e internas.</div>
+          </div>
+<div class="result-item">
+            <div class="result-value">Rastreabilidade</div>
+            <div class="result-label">Histórico e status</div>
+            <div class="result-context">Decisões voltadas a acompanhamento, segurança e previsibilidade.</div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Resultados Qualitativos</span>
+        <p class="body-text" style="margin-top:0.8rem;">A frente ajudou a consolidar uma forma mais clara de tratar contratações dentro do Onboarding, aproximando regras de negócio, operação e experiência do usuário em uma única jornada.</p>
+      </div>
+<blockquote class="pull-quote reveal reveal-delay-2">
+        "Síntese do impacto: a contratação precisava ser desenhada como serviço ponta a ponta, não apenas como formulário."
+        <cite>— Resumo interpretativo do trabalho de produto</cite>
+      </blockquote>
+
+    </div>
+  </section>
+<section class="section" id="learnings">
+    <div class="wrap">
+
+      <div class="reveal">
+        <span class="label">✦ Reflexões</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Aprendizados</h2>
+<p class="body-lg" style="margin-top:0.5rem;">Este projeto foi importante para fortalecer minha atuação em fluxos B2B complexos, nos quais cada estado de interface representa uma regra de negócio.</p>
+      </div>
+
+      <div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+<div class="learning-item">
+          <div class="learning-num">01</div>
+          <div class="learning-content">
+            <div class="learning-title">Regra de negócio também é experiência</div>
+            <div class="learning-body">Quando a regra não aparece de forma clara na tela, o usuário sente como incerteza.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">02</div>
+          <div class="learning-content">
+            <div class="learning-title">Operação precisa de previsibilidade</div>
+            <div class="learning-body">Em fluxos internos, a localização das ações e a clareza dos estados impactam diretamente a segurança do trabalho.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">03</div>
+          <div class="learning-content">
+            <div class="learning-title">O que eu faria diferente</div>
+            <div class="learning-body">Criaria desde o início uma matriz visual única de status, permissões e ações para acelerar alinhamentos entre produto, negócio e tecnologia.</div>
+          </div>
+        </div>
+      </div>
+<div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◇</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Próximos Passos</span>
+        <p class="body-text" style="margin-top:0.8rem;">A evolução natural seria continuar refinando status, mensagens e histórico conforme novos serviços fossem incorporados ao Onboarding.</p>
+      </div>
+      <div class="cards-3 reveal reveal-delay-1" style="margin-top:1.5rem;">
+        <div class="card">
+          <div class="card-icon">🔮</div>
+          <div class="card-title">Padronizar status</div>
+          <div class="card-body">Criar uma linguagem mais sistemática para estados de solicitação.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Expandir para novos serviços</div>
+          <div class="card-body">Reaproveitar a estrutura em outras contratações com regras similares.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">Acompanhar operação</div>
+          <div class="card-body">Observar dúvidas recorrentes da operação para priorizar microajustes.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section-sm" style="background: var(--bg-surface);">
+    <div class="wrap">
+      <div class="case-nav reveal">
+<a href="case-onboarding-b3.html" class="case-nav-item">
+          <div class="case-nav-dir">← Case Anterior</div>
+          <div class="case-nav-title">Onboarding B3</div>
+          <div class="case-nav-arrow">←</div>
+        </a>
+<a href="case-emps-itau.html" class="case-nav-item next">
+          <div class="case-nav-dir">Próximo Case →</div>
+          <div class="case-nav-title">EMPs Itaú PJ</div>
+          <div class="case-nav-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="back-section reveal">
+        <a href="../index.html" class="btn-ghost">← Voltar ao Portfólio</a>
+      </div>
+    </div>
+  </section>
+<footer class="footer">
+    <div class="wrap-full">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Stephany <span>Palos</span></div>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
+        </div>
+        <div class="footer-copy">© 2026 Stephany Palos</div>
+      </div>
+    </div>
+  </footer>
+<script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Reading progress bar
+    const bar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (scrollTop / docH * 100) + '%';
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.10, rootMargin: '0px 0px -30px 0px' }
+    );
+    reveals.forEach(el => obs.observe(el));
+
+    // Process tracker — highlight based on scroll position
+    const phases = ['challenge','discover','define','develop','deliver','validate','results'];
+    const steps  = document.querySelectorAll('.pt-step');
+    const sectionObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          const idx = phases.indexOf(id);
+          if (idx === -1) return;
+          steps.forEach((s, i) => {
+            s.classList.remove('active','done');
+            if (i < idx) s.classList.add('done');
+            if (i === idx) s.classList.add('active');
+          });
+        });
+      },
+      { threshold: 0.3 }
+    );
+    phases.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+  </script>
+
+</body>
+</html>

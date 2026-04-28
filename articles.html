@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Artigos sobre UX, Product Design, process e estratégia por Stephany Palos." />
+  <meta name="keywords" content="UX Design, Product Design, Artigos, Stephany Palos, Medium" />
+  <meta name="author" content="Stephany Palos" />
+  <meta property="og:title" content="Artigos — Stephany Palos" />
+  <meta property="og:description" content="Escrita sobre design, processo, estratégia e produto." />
+  <meta property="og:type" content="website" />
+  <title>Artigos — Stephany Palos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — espelhados do portfólio principal
+    ============================================================ */
+    :root {
+      --color-pine: #1F2B24;
+      --color-moss: #55624B;
+      --color-charcoal: #121212;
+      --color-bone: #EEE7D6;
+      --color-ochre: #B6945A;
+      --color-sage: #A5B08F;
+      --color-mist-green: #D7DDCC;
+      --color-bark: #2B241F;
+      --color-moon-dust: #CFC5AF;
+
+      --bg-primary: #0E0E0C;
+      --bg-secondary: var(--color-pine);
+      --bg-surface: #171715;
+      --bg-soft: rgba(165,176,143,0.07);
+
+      --text-primary: var(--color-bone);
+      --text-secondary: var(--color-moon-dust);
+      --text-muted: rgba(238,231,214,0.6);
+
+      --border-primary: rgba(182,148,90,0.40);
+      --border-soft: rgba(238,231,214,0.10);
+
+      --accent-primary: var(--color-ochre);
+      --accent-secondary: var(--color-sage);
+
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-accent: 'Cormorant Garamond', serif;
+
+      --text-hero: clamp(2.8rem, 7vw, 5.5rem);
+      --text-h1: clamp(2rem, 4vw, 3.8rem);
+      --text-h2: clamp(1.6rem, 3vw, 2.6rem);
+      --text-h3: clamp(1.2rem, 2vw, 1.5rem);
+      --text-body-lg: 1.125rem;
+      --text-body: 1rem;
+      --text-small: 0.875rem;
+      --text-caption: 0.75rem;
+
+      --lh-tight: 1.1;
+      --lh-title: 1.2;
+      --lh-body: 1.7;
+
+      --ls-display: 0.05em;
+      --ls-heading: 0.03em;
+      --ls-ui: 0.10em;
+      --ls-small: 0.14em;
+
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-soft: 0 8px 32px rgba(0,0,0,0.30);
+      --shadow-card: 0 16px 48px rgba(0,0,0,0.36);
+
+      --container-max: 1200px;
+      --transition-base: 280ms ease;
+      --transition-slow: 440ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: var(--lh-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(182,148,90,0.25); color: var(--color-bone); }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .container {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 5rem);
+    }
+    .section-pad { padding: clamp(5rem, 10vw, 9rem) 0; }
+
+    .label-small {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+    }
+
+    /* ============================================================
+       NAV — idêntico ao portfólio
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.4rem 0;
+      transition: background var(--transition-base), backdrop-filter var(--transition-base);
+    }
+    .nav.scrolled {
+      background: rgba(14,14,12,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition-base);
+    }
+    .nav-back:hover { color: var(--color-ochre); }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .nav-logo span { color: var(--color-ochre); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .nav-medium-link {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition-base);
+    }
+    .nav-medium-link:hover { color: var(--color-ochre); }
+
+    /* ============================================================
+       HERO — compacto, não full height
+    ============================================================ */
+    .hero {
+      padding: clamp(7rem, 14vh, 10rem) 0 clamp(4rem, 7vh, 5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31,43,36,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 90% 80%, rgba(85,98,75,0.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-primary), transparent);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.15s forwards;
+    }
+    .hero-eyebrow-line { width: 36px; height: 1px; background: var(--border-primary); }
+    .hero-eyebrow-text {
+      font-size: var(--text-caption);
+      font-weight: 400;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 600;
+      letter-spacing: var(--ls-display);
+      line-height: var(--lh-tight);
+      color: var(--color-bone);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.3s forwards;
+    }
+    .hero-statement {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 540px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    /* ============================================================
+       CATEGORY FILTER
+    ============================================================ */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      padding: 2.5rem 0;
+    }
+    .filter-btn {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .filter-btn:hover {
+      border-color: var(--border-primary);
+      color: var(--color-bone);
+    }
+    .filter-btn.active {
+      border-color: var(--color-ochre);
+      color: var(--color-ochre);
+      background: rgba(182,148,90,0.08);
+    }
+
+    /* ============================================================
+       FEATURED ARTICLE
+    ============================================================ */
+    .featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 4rem;
+      transition: border-color var(--transition-base), box-shadow var(--transition-slow);
+    }
+    .featured:hover {
+      border-color: var(--border-primary);
+      box-shadow: var(--shadow-card);
+    }
+    .featured-visual {
+      background: linear-gradient(145deg, var(--color-pine) 0%, #1a2618 50%, var(--color-moss) 100%);
+      min-height: 340px;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .featured-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23B6945A' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .featured-visual-emblem {
+      position: absolute;
+      width: 200px;
+      opacity: 0.12;
+    }
+    .featured-badge {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      background: rgba(14,14,12,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(182,148,90,0.3);
+      padding: 0.35rem 0.8rem;
+      border-radius: 4px;
+    }
+    .featured-content {
+      padding: clamp(2rem, 4vw, 3rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.2rem;
+    }
+    .featured-label {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+    }
+    .featured-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: 1.3;
+    }
+    .featured-excerpt {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-soft);
+    }
+    .featured-meta-item {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .featured-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      transition: gap var(--transition-base);
+      margin-top: 0.5rem;
+    }
+    .featured-cta:hover { gap: 0.9rem; }
+
+    /* ============================================================
+       ARTICLES GRID + ARTICLE CARD (idêntico ao portfólio)
+    ============================================================ */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .article-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .article-card:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-2px);
+    }
+    .article-date {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .article-title {
+      font-family: var(--font-display);
+      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--color-bone);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .article-excerpt {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .article-tag {
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.20);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+    }
+    .article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--color-ochre);
+      margin-top: auto;
+      transition: gap var(--transition-base);
+    }
+    .article-link:hover { gap: 0.7rem; }
+
+    /* ============================================================
+       SECTION HEADERS
+    ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+      margin-top: 0.6rem;
+    }
+
+    /* ============================================================
+       DIVIDER
+    ============================================================ */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-primary), transparent);
+      margin: clamp(4rem, 8vw, 6rem) 0;
+    }
+
+    /* ============================================================
+       MEDIUM CTA SECTION
+    ============================================================ */
+    .medium-cta {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-primary);
+      padding: clamp(3rem, 5vw, 4rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .medium-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-ochre), transparent);
+    }
+    .medium-cta-text {}
+    .medium-cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+    .medium-cta-desc {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2.2rem;
+      background: var(--color-bone);
+      color: var(--color-charcoal);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-base);
+      border: 1px solid var(--color-bone);
+    }
+    .btn-primary:hover {
+      background: var(--color-ochre);
+      border-color: var(--color-ochre);
+      color: var(--bg-primary);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      color: var(--color-bone);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition-base);
+    }
+    .btn-ghost:hover {
+      background: rgba(182,148,90,0.10);
+      border-color: var(--color-ochre);
+      color: var(--color-ochre);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-bark);
+      border-top: 1px solid var(--border-soft);
+      padding: 3rem 0 2rem;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+    .footer-tagline {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 900px) {
+      .featured { grid-template-columns: 1fr; }
+      .featured-visual { min-height: 220px; }
+      .articles-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-right { align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .medium-cta { flex-direction: column; }
+      .filter-bar { gap: 0.4rem; }
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-back">← Portfólio</a>
+        <a href="index.html" class="nav-logo">Stephany <span>Palos</span></a>
+        <div class="nav-right">
+          <a href="https://medium.com/@stephanypalos" target="_blank" rel="noopener" class="nav-medium-link">Medium →</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span class="hero-eyebrow-text">Escrita &amp; Reflexões</span>
+        </div>
+        <h1 class="hero-title">Artigos</h1>
+        <p class="hero-statement">
+          Reflexões sobre design de produto, processo, estratégia e as decisões que moldam experiências.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FILTER + CONTENT
+  ============================================================ -->
+  <main>
+    <div class="container">
+
+      <!-- Filtro por categoria -->
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="design">Design</button>
+        <button class="filter-btn" data-filter="research">Research</button>
+        <button class="filter-btn" data-filter="processo">Processo</button>
+        <button class="filter-btn" data-filter="portfolio">Portfólio</button>
+        <button class="filter-btn" data-filter="produto">Produto</button>
+      </div>
+
+      <!-- ============================================================
+           ARTIGO DESTAQUE
+      ============================================================ -->
+      <a href="articles/article-design-system-ia.html" class="featured reveal" data-category="design">
+        <div class="featured-visual">
+          <span class="featured-badge">Destaque</span>
+          <svg class="featured-visual-emblem" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="50" y="50" width="100" height="100" transform="rotate(45 100 100)" stroke="#B6945A" stroke-width="1.2" fill="none"/>
+            <circle cx="100" cy="100" r="8" fill="#B6945A"/>
+            <path d="M 100 20 L 100 80 M 100 120 L 100 180 M 20 100 L 80 100 M 120 100 L 180 100" stroke="#B6945A" stroke-width="0.7" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="featured-content">
+          <div class="featured-label">✦ Design · 2025</div>
+          <h2 class="featured-title">Design System, IA e a importância de dar contexto para a máquina</h2>
+          <p class="featured-excerpt">
+            Reflexão sobre como prompts, documentação e padrões influenciam a qualidade de interfaces geradas com apoio de IA — e por que o designer continua sendo o nó central dessa equação.
+          </p>
+          <div class="featured-meta">
+            <span class="featured-meta-item">8 min de leitura</span>
+            <span class="featured-meta-item">Janeiro 2025</span>
+          </div>
+          <span class="featured-cta">Ler artigo <span>→</span></span>
+        </div>
+      </a>
+
+      <!-- ============================================================
+           GRADE DE ARTIGOS
+      ============================================================ -->
+      <div class="section-header reveal">
+        <div>
+          <span class="label-small">✦ Todos os Artigos</span>
+          <h2 class="section-title">Publicações</h2>
+        </div>
+      </div>
+
+      <div class="articles-grid" id="articlesGrid">
+
+        <a href="articles/article-handoff-contexto.html" class="article-card reveal" data-category="research processo">
+          <div class="article-date">Research · 2025</div>
+          <h3 class="article-title">Handoff não é entrega de tela: é alinhamento de contexto</h3>
+          <p class="article-excerpt">Uma visão prática sobre especificações, critérios de QA, regras de negócio e decisões que precisam acompanhar uma interface.</p>
+          <div class="article-tags">
+            <span class="article-tag">Handoff</span>
+            <span class="article-tag">Processo</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+        <a href="articles/article-portfolio-produto.html" class="article-card reveal reveal-delay-1" data-category="portfolio">
+          <div class="article-date">Portfolio · 2024</div>
+          <h3 class="article-title">Portfólio de produto: menos volume, mais raciocínio</h3>
+          <p class="article-excerpt">Como apresentar contexto, problema, decisão e impacto sem depender apenas de telas finais ou narrativas exageradas.</p>
+          <div class="article-tags">
+            <span class="article-tag">Portfolio</span>
+            <span class="article-tag">Carreira</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+        <a href="articles/article-template.html" class="article-card reveal reveal-delay-2" data-category="processo produto">
+          <div class="article-date">Produto · 2024</div>
+          <h3 class="article-title">[Título do próximo artigo]</h3>
+          <p class="article-excerpt">[Resumo do artigo — 1 a 2 frases sobre o tema central e o ponto de vista que você traz.]</p>
+          <div class="article-tags">
+            <span class="article-tag">[Tag 1]</span>
+            <span class="article-tag">[Tag 2]</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+        <a href="articles/article-template.html" class="article-card reveal" data-category="design">
+          <div class="article-date">Design · 2024</div>
+          <h3 class="article-title">[Título do artigo]</h3>
+          <p class="article-excerpt">[Resumo do artigo]</p>
+          <div class="article-tags">
+            <span class="article-tag">[Tag]</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+        <a href="articles/article-template.html" class="article-card reveal reveal-delay-1" data-category="research">
+          <div class="article-date">Research · 2024</div>
+          <h3 class="article-title">[Título do artigo]</h3>
+          <p class="article-excerpt">[Resumo do artigo]</p>
+          <div class="article-tags">
+            <span class="article-tag">[Tag]</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+        <a href="articles/article-template.html" class="article-card reveal reveal-delay-2" data-category="produto">
+          <div class="article-date">Produto · 2023</div>
+          <h3 class="article-title">[Título do artigo]</h3>
+          <p class="article-excerpt">[Resumo do artigo]</p>
+          <div class="article-tags">
+            <span class="article-tag">[Tag]</span>
+          </div>
+          <span class="article-link">Ler artigo <span>→</span></span>
+        </a>
+
+      </div><!-- /articles-grid -->
+
+      <div class="section-divider"></div>
+
+      <!-- CTA Medium -->
+      <div class="medium-cta reveal">
+        <div class="medium-cta-text">
+          <div class="medium-cta-title">Também publico no Medium</div>
+          <p class="medium-cta-desc">Artigos mais longos, tutoriais e análises de produto na plataforma.</p>
+        </div>
+        <a href="https://medium.com/@stephanypalos" target="_blank" rel="noopener" class="btn-primary">Ver no Medium →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" style="margin-top: clamp(5rem, 10vw, 9rem);">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">Stephany Palos</div>
+          <div class="footer-tagline">UX &amp; Product Design · São Paulo, BR</div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-copy">© 2025 Stephany Palos. Todos os direitos reservados.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.10, rootMargin: '0px 0px -30px 0px' }
+    );
+    reveals.forEach(el => obs.observe(el));
+
+    // Category filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('#articlesGrid .article-card, .featured');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          const cats = (card.dataset.category || '').split(' ');
+          if (filter === 'all' || cats.includes(filter)) {
+            card.style.display = '';
+            setTimeout(() => card.classList.add('visible'), 10);
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

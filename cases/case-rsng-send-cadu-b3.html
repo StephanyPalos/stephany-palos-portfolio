@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RSNG, SEND e CADU — Case Study por Stephany Palos, UX & Product Designer." />
+  <meta name="keywords" content="UX Case Study, Product Design, Stephany Palos, B3, RSNG, SEND, CADU, Sistema Nacional de Gravames, UI Design, Product Design" />
+  <meta name="author" content="Stephany Palos" />
+  <meta property="og:title" content="RSNG, SEND e CADU — Case Study · Stephany Palos" />
+  <meta property="og:description" content="Atuação focada em UI e estruturação de telas para sistemas B3 como RSNG, SEND e CADU." />
+  <meta property="og:type" content="article" />
+  <title>RSNG, SEND e CADU — Case Study · Stephany Palos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS (espelhados do portfólio principal)
+    ============================================================ */
+    :root {
+      --color-pine: #1F2B24;
+      --color-moss: #55624B;
+      --color-charcoal: #121212;
+      --color-bone: #EEE7D6;
+      --color-ochre: #B6945A;
+      --color-sage: #A5B08F;
+      --color-mist-green: #D7DDCC;
+      --color-bark: #2B241F;
+      --color-moon-dust: #CFC5AF;
+
+      --bg-primary: #0E0E0C;
+      --bg-secondary: var(--color-pine);
+      --bg-surface: #171715;
+      --bg-card: #1C1C19;
+
+      --text-primary: var(--color-bone);
+      --text-secondary: var(--color-moon-dust);
+      --text-muted: rgba(238,231,214,0.55);
+
+      --border-primary: rgba(182,148,90,0.40);
+      --border-soft: rgba(238,231,214,0.09);
+
+      --accent: var(--color-ochre);
+
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-accent: 'Cormorant Garamond', serif;
+
+      --text-hero: clamp(2.4rem, 6vw, 4.8rem);
+      --text-h2: clamp(1.5rem, 3vw, 2.2rem);
+      --text-h3: clamp(1.1rem, 2vw, 1.4rem);
+      --text-body-lg: 1.125rem;
+      --text-body: 1rem;
+      --text-small: 0.875rem;
+      --text-caption: 0.75rem;
+
+      --lh-tight: 1.15;
+      --lh-body: 1.75;
+
+      --ls-display: 0.05em;
+      --ls-heading: 0.03em;
+      --ls-small: 0.13em;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-card: 0 16px 48px rgba(0,0,0,0.34);
+
+      --container: 760px;       /* body text column */
+      --container-wide: 1100px; /* media / full-bleed */
+      --container-max: 1260px;
+
+      --transition: 260ms ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: var(--lh-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-wrap: break-word;
+    }
+    ::selection { background: rgba(182,148,90,0.25); color: var(--color-bone); }
+    img { display: block; max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+    a { color: inherit; text-decoration: none; }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 900;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .wrap        { width: 100%; max-width: var(--container);      margin: 0 auto; padding: 0 clamp(1.25rem,5vw,2.5rem); }
+    .wrap-wide   { width: 100%; max-width: var(--container-wide); margin: 0 auto; padding: 0 clamp(1.25rem,5vw,3rem); }
+    .wrap-full   { width: 100%; max-width: var(--container-max);  margin: 0 auto; padding: 0 clamp(1.25rem,5vw,5rem); }
+
+    .section     { padding: clamp(4rem,8vw,7rem) 0; }
+    .section-sm  { padding: clamp(2.5rem,5vw,4rem) 0; }
+
+    .label {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin: clamp(3rem,6vw,5rem) 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border-soft); }
+    .divider-icon { color: var(--accent); font-size: 0.7rem; flex-shrink: 0; }
+
+    /* ============================================================
+       PLACEHOLDER (hint boxes shown in template mode)
+    ============================================================ */
+    .ph {
+      border: 1.5px dashed rgba(182,148,90,0.35);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      font-size: var(--text-small);
+      color: rgba(182,148,90,0.65);
+      font-style: italic;
+      background: rgba(182,148,90,0.04);
+      margin: 0.5rem 0;
+    }
+    .ph-img {
+      aspect-ratio: 16/9;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      text-align: center;
+      border: 1.5px dashed rgba(182,148,90,0.30);
+      border-radius: var(--radius-md);
+      background: rgba(31,43,36,0.25);
+      color: rgba(182,148,90,0.50);
+      font-size: var(--text-small);
+      font-style: italic;
+      padding: 1rem;
+    }
+    .ph-img-tall { aspect-ratio: 4/3; }
+    .ph-img-sq   { aspect-ratio: 1/1; }
+    .ph-icon { font-size: 2rem; opacity: 0.5; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 0;
+      transition: background var(--transition), backdrop-filter var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(14,14,12,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-width: 0;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+    .nav-back:hover { color: var(--accent); }
+    .nav-back-arrow { font-size: 0.8rem; }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-progress {
+      width: 80px;
+      flex: 0 0 80px;
+      height: 2px;
+      background: var(--border-soft);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .nav-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       CASE HERO
+    ============================================================ */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(7rem, 14vh, 9rem) 0 clamp(3rem, 7vh, 4.5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+      /* INSTRUÇÃO: substitua este elemento por uma imagem real do projeto */
+    }
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, transparent 0%, rgba(14,14,12,0.4) 50%, var(--bg-primary) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31,43,36,0.50) 0%, transparent 60%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+      min-width: 0;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      min-width: 0;
+    }
+    .hero-eyebrow-line { width: 36px; height: 1px; background: var(--border-primary); }
+    .hero-category {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 600;
+      letter-spacing: var(--ls-display);
+      line-height: var(--lh-tight);
+      color: var(--color-bone);
+      margin-bottom: 1rem;
+      max-width: 12ch;
+      overflow-wrap: anywhere;
+    }
+    .hero-tagline {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+    .hero-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 1.4rem 2rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-meta-item { min-width: 0; }
+    .hero-meta-label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .hero-meta-value {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+      overflow-wrap: anywhere;
+    }
+
+    .hero-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+    .hero-scroll-text {
+      font-size: 0.62rem;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hero-scroll-line {
+      width: 36px;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+    }
+
+    /* ============================================================
+       OVERVIEW / BRIEF
+    ============================================================ */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .overview-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      transition: border-color var(--transition);
+    }
+    .stat-box:hover { border-color: var(--border-primary); }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+    .stat-context {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY ELEMENTS
+    ============================================================ */
+    .section-label { margin-bottom: 0.6rem; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+      margin-bottom: 1.5rem;
+    }
+    .body-lg {
+      font-family: var(--font-accent);
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+    .body-text {
+      font-size: var(--text-body);
+      color: var(--text-secondary);
+      line-height: var(--lh-body);
+    }
+    .body-text + .body-text { margin-top: 1.2rem; }
+
+    blockquote.pull-quote {
+      border-left: 2px solid var(--accent);
+      padding: 1rem 1.5rem;
+      margin: 2.5rem 0;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+      color: var(--color-bone);
+      line-height: 1.65;
+    }
+    blockquote.pull-quote cite {
+      display: block;
+      font-style: normal;
+      font-size: var(--text-caption);
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    .insight-box {
+      background: rgba(31,43,36,0.55);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 2rem;
+      position: relative;
+    }
+    .insight-box::before {
+      content: '✦';
+      position: absolute;
+      top: -0.6rem;
+      left: 1.8rem;
+      background: var(--bg-primary);
+      padding: 0 0.4rem;
+      color: var(--accent);
+      font-size: 0.7rem;
+    }
+    .insight-box-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    /* ============================================================
+       PROCESS TRACKER (sticky sidebar indicator)
+    ============================================================ */
+    .process-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: clamp(3rem, 5vw, 5rem);
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    .process-track::-webkit-scrollbar { display: none; }
+    .pt-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 100px;
+      position: relative;
+      cursor: pointer;
+    }
+    .pt-step::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 16px);
+      right: calc(-50% + 16px);
+      height: 1px;
+      background: var(--border-soft);
+    }
+    .pt-step:last-child::after { display: none; }
+    .pt-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-soft);
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      transition: all var(--transition);
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .pt-step.active .pt-dot {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(182,148,90,0.12);
+      box-shadow: 0 0 0 4px rgba(182,148,90,0.08);
+    }
+    .pt-step.done .pt-dot {
+      border-color: var(--color-moss);
+      color: var(--color-sage);
+      background: rgba(85,98,75,0.15);
+    }
+    .pt-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .pt-step.active .pt-label { color: var(--accent); }
+
+    /* ============================================================
+       PHASE HEADERS
+    ============================================================ */
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .phase-badge {
+      width: 52px;
+      height: 52px;
+      border: 1.5px solid var(--border-primary);
+      border-radius: 8px;
+      transform: rotate(45deg);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.06);
+      flex-shrink: 0;
+    }
+    .phase-badge-inner { transform: rotate(-45deg); font-size: 1.1rem; }
+    .phase-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 500;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      line-height: var(--lh-tight);
+    }
+    .phase-desc {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .cards-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      transition: border-color var(--transition);
+      min-width: 0;
+    }
+    .card:hover { border-color: var(--border-primary); }
+    .card-icon { font-size: 1.2rem; margin-bottom: 0.8rem; }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: var(--ls-heading);
+      color: var(--color-bone);
+      margin-bottom: 0.5rem;
+    }
+    .card-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Finding / research card */
+    .finding {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1.2rem 1.4rem;
+    }
+    .finding + .finding { margin-top: 0.6rem; }
+    .finding-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .finding-text {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Persona card */
+    .persona-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .persona-header {
+      background: var(--color-pine);
+      padding: 1.8rem 1.8rem 1.2rem;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .persona-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-primary);
+      display: grid;
+      place-items: center;
+      background: rgba(182,148,90,0.10);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .persona-name {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .persona-role {
+      font-size: var(--text-caption);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+    .persona-quote {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+    .persona-body { padding: 1.4rem 1.8rem; }
+    .persona-section-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .persona-list li {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .persona-list li::before {
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-sage);
+      flex-shrink: 0;
+      margin-top: 0.55rem;
+    }
+
+    /* HMW tags */
+    .hmw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .hmw-tag {
+      font-size: var(--text-small);
+      color: var(--color-bone);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      line-height: 1.4;
+    }
+    .hmw-tag strong {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       IMAGES / MEDIA
+    ============================================================ */
+    .img-full {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+    }
+    .img-caption {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.7rem;
+      letter-spacing: 0.05em;
+      font-style: italic;
+    }
+    .imgs-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+    .imgs-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .img-with-caption {}
+
+    /* ============================================================
+       TOOLS & TAGS
+    ============================================================ */
+    .tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tool-tag {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      background: rgba(165,176,143,0.09);
+      border: 1px solid rgba(165,176,143,0.22);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    /* ============================================================
+       ITERATION / BEFORE-AFTER
+    ============================================================ */
+    .iteration-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .iteration-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .iteration-col {
+      padding: 0.8rem 1.2rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .iteration-col.before {
+      background: rgba(43,36,31,0.60);
+      color: var(--text-muted);
+      border-right: 1px solid var(--border-soft);
+    }
+    .iteration-col.after {
+      background: rgba(31,43,36,0.50);
+      color: var(--color-sage);
+    }
+    .iteration-imgs {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      border-top: 1px solid var(--border-soft);
+    }
+    .iteration-imgs > div { padding: 1.2rem; }
+    .iteration-imgs > div:first-child { border-right: 1px solid var(--border-soft); }
+
+    /* ============================================================
+       RESULTS / IMPACT
+    ============================================================ */
+    .results-bg {
+      background: var(--color-pine);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-primary);
+      padding: clamp(2.5rem, 5vw, 4rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .results-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .results-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(85,98,75,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+      margin-top: 2.5rem;
+    }
+    .result-item { text-align: center; }
+    .result-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .result-label {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .result-context {
+      font-size: var(--text-small);
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       LEARNINGS
+    ============================================================ */
+    .learning-item {
+      display: flex;
+      gap: 1.2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .learning-item:last-child { border-bottom: none; }
+    .learning-num {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: var(--ls-small);
+      color: var(--accent);
+      padding-top: 0.1rem;
+      min-width: 24px;
+    }
+    .learning-content {}
+    .learning-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--color-bone);
+      margin-bottom: 0.4rem;
+    }
+    .learning-body {
+      font-size: var(--text-small);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       CASE NAVIGATION
+    ============================================================ */
+    .case-nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      margin-top: clamp(3rem, 6vw, 5rem);
+    }
+    .case-nav-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .case-nav-item:hover {
+      border-color: var(--border-primary);
+      transform: translateY(-2px);
+    }
+    .case-nav-item.next { text-align: right; }
+    .case-nav-dir {
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .case-nav-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-bone);
+    }
+    .case-nav-arrow { font-size: 1.2rem; color: var(--accent); }
+
+    /* Back to portfolio */
+    .back-section {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 0;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--color-bark);
+      border-top: 1px solid var(--border-soft);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: var(--ls-display);
+      color: var(--color-bone);
+      font-weight: 500;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      font-size: var(--text-caption);
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--color-bone);
+      color: var(--color-charcoal);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      border: 1px solid var(--color-bone);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-primary);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--color-bone);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: var(--ls-small);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition);
+    }
+    .btn-ghost:hover {
+      background: rgba(182,148,90,0.10);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 860px) {
+      .hero { min-height: auto; padding-top: 7rem; }
+      .nav-progress { width: 56px; flex-basis: 56px; }
+      .overview-grid      { grid-template-columns: 1fr; }
+      .overview-stat-row  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards-2,
+      .cards-3            { grid-template-columns: 1fr; }
+      .imgs-2,
+      .imgs-3             { grid-template-columns: 1fr; }
+      .results-grid       { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .iteration-header,
+      .iteration-imgs     { grid-template-columns: 1fr; }
+      .iteration-col.before { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .iteration-imgs > div:first-child { border-right: none; border-bottom: 1px solid var(--border-soft); }
+      .case-nav           { grid-template-columns: 1fr; }
+      .case-nav-item.next { text-align: left; }
+      .hero-meta-strip    { gap: 1.2rem; }
+      .hero-title { max-width: 14ch; }
+    }
+
+    @media (max-width: 560px) {
+      :root { --text-hero: clamp(2rem, 13vw, 3.2rem); }
+      .wrap, .wrap-wide, .wrap-full { padding-inline: 1.1rem; }
+      .nav-back { font-size: 0.62rem; }
+      .nav-logo { font-size: 0.68rem; letter-spacing: 0.03em; }
+      .nav-progress { display: none; }
+      .hero { padding-top: 6.2rem; padding-bottom: 2.4rem; }
+      .hero-eyebrow { gap: 0.7rem; margin-bottom: 1.2rem; }
+      .hero-eyebrow-line { width: 24px; flex-shrink: 0; }
+      .hero-title { max-width: 100%; letter-spacing: 0.035em; }
+      .hero-tagline { margin-bottom: 1.8rem; }
+      .hero-meta-strip { grid-template-columns: 1fr; gap: 1rem; }
+      .overview-stat-row { grid-template-columns: 1fr; }
+      .results-grid      { grid-template-columns: 1fr; }
+      .phase-header      { flex-direction: column; gap: 1rem; }
+      .process-track { margin-inline: -1.1rem; padding-inline: 1.1rem; }
+      .pt-step { min-width: 86px; }
+      .results-bg { padding: 2rem 1.2rem; }
+      .card, .stat-box, .case-nav-item { padding: 1.25rem; }
+      .insight-box { padding: 1.35rem; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+  </style>
+</head>
+
+<body>
+<nav class="nav" id="nav">
+    <div class="wrap-full">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-back">
+          <span class="nav-back-arrow">←</span> Portfólio
+        </a>
+        <a href="../index.html" class="nav-logo">Stephany <span>Palos</span></a>
+        <div class="nav-progress" title="Progresso de leitura">
+          <div class="nav-progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+<section class="hero">
+    <div class="hero-bg">
+<div class="hero-bg-img" style="background: linear-gradient(135deg, #1a2618 0%, var(--color-pine) 50%, #2b1f1a 100%);"></div>
+      <div class="hero-bg-gradient"></div>
+    </div>
+    <div class="wrap-full">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+<span class="hero-category">B3 · Sistemas Operacionais · Case Study</span>
+        </div>
+<h1 class="hero-title">RSNG, SEND e CADU</h1>
+<p class="hero-tagline">Estruturação visual e evolução de telas para sistemas corporativos complexos, com foco em clareza, consistência e operação.</p>
+      </div>
+      <div class="hero-meta-strip">
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Empresa</div>
+<div class="hero-meta-value">B3</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Meu Papel</div>
+<div class="hero-meta-value">UI / Product Designer</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Duração</div>
+<div class="hero-meta-value">Frentes evolutivas</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ano</div>
+<div class="hero-meta-value">Período não divulgado</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Plataforma</div>
+<div class="hero-meta-value">Web Apps corporativos</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Ferramentas</div>
+<div class="hero-meta-value">Figma · Design System · Alinhamentos técnicos</div>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-text">Continue lendo</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </div>
+  </section>
+<section class="section">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">✦ Visão Geral</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">O projeto em síntese</h2>
+      </div>
+
+      <div class="overview-grid reveal reveal-delay-1">
+        <div>
+<p class="body-lg">Além das frentes de Onboarding, também atuei em sistemas B3 como RSNG, SEND e CADU. No RSNG, o foco foi totalmente em UI; no SEND, participei de evoluções como processamento em lote e outras telas; no CADU, atuei na estruturação de telas para o contexto UIF-B3.</p>
+<p class="body-text" style="margin-top:1.4rem;">O desafio era trabalhar em produtos corporativos com alta densidade de informação, regras específicas e necessidade de consistência visual. A atuação exigia transformar requisitos e fluxos em telas claras, respeitando padrões e limitações de cada sistema.</p>
+<p class="body-text" style="margin-top:1rem;">Minha contribuição se concentrou em UI, organização de telas, hierarquia, aplicação de componentes e evolução de fluxos específicos. Como não há material completo desses projetos no histórico, este case é apresentado de forma objetiva, sem extrapolar escopo ou resultados.</p>
+        </div>
+
+        <div>
+<div class="ph-img">
+            <span class="ph-icon">🖼</span>
+            <span>Espaço para composição de telas RSNG/SEND/CADU<br/><small>Inserir imagens sem dados sensíveis</small></span>
+          </div>
+          <p class="img-caption">Sugestão: mosaico com telas anonimizadas dos sistemas.</p>
+        </div>
+      </div>
+<div class="overview-stat-row reveal reveal-delay-2">
+        <div class="stat-box">
+<div class="stat-value">RSNG</div>
+          <div class="stat-label">UI Focus</div>
+          <div class="stat-context">Atuação totalmente focada em interface para o Sistema Nacional de Gravames.</div>
+        </div>
+        <div class="stat-box">
+<div class="stat-value">SEND</div>
+          <div class="stat-label">Evolução</div>
+          <div class="stat-context">Incluiu processamento em lote e outras telas.</div>
+        </div>
+        <div class="stat-box">
+<div class="stat-value">CADU</div>
+          <div class="stat-label">Estruturação</div>
+          <div class="stat-context">Organização de telas no contexto UIF-B3.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+<div class="wrap-wide">
+    <div class="process-track reveal">
+      <div class="pt-step done">
+        <div class="pt-dot">◎</div>
+        <span class="pt-label">Discover</span>
+      </div>
+      <div class="pt-step done">
+        <div class="pt-dot">◈</div>
+        <span class="pt-label">Define</span>
+      </div>
+      <div class="pt-step active">
+        <div class="pt-dot">✦</div>
+        <span class="pt-label">Develop</span>
+      </div>
+      <div class="pt-step">
+        <div class="pt-dot">⟡</div>
+        <span class="pt-label">Deliver</span>
+      </div>
+      <div class="pt-step">
+        <div class="pt-dot">◉</div>
+        <span class="pt-label">Validate</span>
+      </div>
+    </div>
+  </div>
+<section class="section" style="background: var(--bg-surface);" id="challenge">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Contexto</div>
+          <h2 class="phase-title">O Desafio</h2>
+          <p class="phase-desc">O problema que motivou o projeto e as restrições que moldaram nossa abordagem.</p>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Problem Statement</div>
+<div class="card-body">Sistemas corporativos complexos precisam apresentar grande volume de informação e ações de forma clara. O desafio era estruturar telas que apoiassem a operação sem criar ruído visual ou inconsistência entre frentes.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Objetivo do Projeto</div>
+<div class="card-body">Criar e evoluir telas com foco em clareza, consistência visual e aderência aos fluxos de negócio, respeitando as particularidades de RSNG, SEND e CADU.</div>
+        </div>
+      </div>
+
+      <div class="cards-2 reveal reveal-delay-2" style="margin-top:1rem;">
+        <div class="card">
+          <div class="card-icon">🧑‍💻</div>
+          <div class="card-title">Meu Papel</div>
+<div class="card-body">Atuei principalmente em UI e estruturação de telas, organizando hierarquia visual, componentes, estados e fluxos. Em algumas frentes, a atuação foi mais visual e de composição; em outras, envolveu evolução de fluxos específicos.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Time & Colaboração</div>
+<div class="card-body">Colaboração com times de produto, tecnologia e stakeholders dos sistemas. O trabalho foi orientado por requisitos, fluxos existentes e validações internas.</div>
+        </div>
+      </div>
+<div class="insight-box reveal reveal-delay-3" style="margin-top:2rem;">
+        <div class="insight-box-label">Restrições do Projeto</div>
+<p class="body-text">Os sistemas envolviam contexto corporativo, regras de negócio específicas e restrições de confidencialidade. Como parte do histórico não está documentada aqui, o case evita afirmar métricas, processos de pesquisa ou resultados não comprovados.</p>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="discover">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◎</span></div>
+        <div>
+          <div class="phase-num">Fase 01 · Discover</div>
+          <h2 class="phase-title">Pesquisa & Descoberta</h2>
+          <p class="phase-desc">Entendendo o usuário real, o contexto de uso e os padrões que o mercado já estabeleceu.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Métodos de Research</span>
+        <div class="tools-row" style="margin-top:0.8rem;">
+          <span class="tool-tag">Análise de Requisitos</span>
+          <span class="tool-tag">Estruturação de UI</span>
+          <span class="tool-tag">Aplicação de Componentes</span>
+          <span class="tool-tag">Revisão de Fluxos</span>
+          <span class="tool-tag">Alinhamento Técnico</span>
+        </div>
+      </div>
+<div style="margin-top:2rem;" class="reveal reveal-delay-1">
+<p class="body-lg">A descoberta foi baseada no entendimento de requisitos e fluxos fornecidos pelo time, revisão de telas existentes e discussão sobre o comportamento esperado das interfaces. Não há registro suficiente para afirmar pesquisa com usuários finais neste recorte.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:2rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">📋</span>
+              <span>Requisitos e fluxo recebido</span>
+            </div>
+            <p class="img-caption">Base para interpretação e estruturação das telas.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">📊</span>
+              <span>Tela existente / referência interna</span>
+            </div>
+            <p class="img-caption">Análise visual e identificação de oportunidades de organização.</p>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Principais Achados</span>
+        <div style="margin-top:1rem;">
+<div class="finding">
+            <div class="finding-num">Achado 01</div>
+            <div class="finding-text">A densidade de informação exigia hierarquia visual clara para evitar sobrecarga.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 02</div>
+            <div class="finding-text">Fluxos como processamento em lote precisavam explicitar status, etapas e ações disponíveis.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 03</div>
+            <div class="finding-text">A consistência entre telas era importante para reduzir esforço de aprendizado em sistemas diferentes.</div>
+          </div>
+          <div class="finding">
+            <div class="finding-num">Achado 04</div>
+            <div class="finding-text">Nem todo projeto exigia discovery amplo; em alguns casos, o valor estava em executar UI com precisão e aderência ao contexto.</div>
+          </div>
+        </div>
+      </div>
+<blockquote class="pull-quote reveal reveal-delay-2">
+        "Síntese do diagnóstico: em sistemas operacionais, uma boa UI não tenta aparecer; ela organiza o trabalho para que a pessoa consiga agir com segurança."
+        <cite>— Insight sintetizado a partir das frentes B3</cite>
+      </blockquote>
+<div class="reveal reveal-delay-1" style="margin-top:1rem;">
+        <span class="label">Benchmark Competitivo</span>
+        <p class="body-text" style="margin-top:0.8rem;">As referências utilizadas foram majoritariamente padrões internos, componentes existentes e boas práticas de UI para sistemas densos. O foco foi consistência e legibilidade, não criação de uma linguagem visual nova.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal">
+          <span class="ph-icon">🔍</span>
+          <span>Referências internas e padrões de UI</span>
+        </div>
+        <p class="img-caption">Comparação de componentes, tabelas, formulários e estados aplicáveis.</p>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-secondary);" id="define">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◈</span></div>
+        <div>
+          <div class="phase-num">Fase 02 · Define</div>
+          <h2 class="phase-title">Síntese & Definição</h2>
+          <p class="phase-desc">Transformando dados brutos em clareza: quem é o usuário, o que ele realmente precisa e qual problema vale resolver.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Persona(s)</span>
+      </div>
+      <div class="cards-2 reveal reveal-delay-1" style="margin-top:1rem;">
+<div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">🧑</div>
+            <div>
+<div class="persona-name">Usuário operacional</div>
+<div class="persona-role">Pessoa que utiliza sistemas B3 no dia a dia</div>
+<div class="persona-quote">"Preciso entender status, dados e ações sem perder tempo interpretando a tela."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+<li>Executar tarefas com segurança e previsibilidade.</li>
+              <li>Ler informações densas sem confusão.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+<li>Telas densas sem hierarquia dificultam tomada de decisão.</li>
+              <li>Ações pouco evidentes aumentam risco de erro.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+<li>Opera sistemas com foco em tarefa e precisão.</li>
+              <li>Depende de status, tabelas, filtros e ações bem posicionadas.</li>
+            </ul>
+          </div>
+        </div>
+<div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">👩</div>
+            <div>
+              <div class="persona-name">Time de produto/tecnologia</div>
+              <div class="persona-role">Responsável por requisito e implementação</div>
+              <div class="persona-quote">"A tela precisa representar o fluxo corretamente e ser viável de implementar."</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section-title">Objetivos</div>
+            <ul class="persona-list">
+              <li>Traduzir requisitos em interface consistente.</li>
+              <li>Garantir aderência ao comportamento esperado do sistema.</li>
+            </ul>
+            <div class="persona-section-title">Frustrações</div>
+            <ul class="persona-list">
+              <li>Telas densas sem hierarquia dificultam tomada de decisão.</li>
+              <li>Ações pouco evidentes aumentam risco de erro.</li>
+            </ul>
+            <div class="persona-section-title">Comportamentos</div>
+            <ul class="persona-list">
+              <li>Opera sistemas com foco em tarefa e precisão.</li>
+              <li>Depende de status, tabelas, filtros e ações bem posicionadas.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+<div class="divider wrap">
+        <div class="divider-line"></div>
+        <span class="divider-icon">✦</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Mapa de Jornada</span>
+        <p class="body-text" style="margin-top:0.6rem;">A jornada foi tratada a partir dos fluxos específicos de cada sistema. Em vez de uma única jornada ampla, o trabalho considerou momentos de operação, consulta, processamento, status e ação.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🗺️</span>
+          <span>Fluxos operacionais por sistema</span>
+        </div>
+        <p class="img-caption">Mapeamento de etapas para RSNG, SEND e CADU.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Insights Síntese</span>
+        <p class="body-text" style="margin-top:0.6rem;">A síntese organizou telas por tipo de necessidade: consulta, formulário, processamento, acompanhamento e ação. Isso ajudou a priorizar hierarquia e componentes adequados.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">🗂️</span>
+              <span>Agrupamento por tipo de tela</span>
+            </div>
+            <p class="img-caption">Classificação de telas e padrões recorrentes nos sistemas.</p>
+          </div>
+          <div>
+<span class="label" style="margin-bottom:0.8rem; display:block;">Insights Priorizados</span>
+            <div class="finding">
+              <div class="finding-num">Insight 01</div>
+              <div class="finding-text">Em sistemas densos, hierarquia visual é uma forma de reduzir risco operacional.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 02</div>
+              <div class="finding-text">UI bem resolvida também depende de entender regra e fluxo, não só estética.</div>
+            </div>
+            <div class="finding">
+              <div class="finding-num">Insight 03</div>
+              <div class="finding-text">Consistência entre telas ajuda usuários a transferirem aprendizado de uma frente para outra.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">How Might We?</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.2rem;">As perguntas que guiaram a fase de ideação, derivadas diretamente dos insights de research.</p>
+        <div class="hmw-grid">
+          <div class="hmw-tag"><strong>HMW</strong> organizar telas densas sem esconder informações importantes?</div>
+          <div class="hmw-tag"><strong>HMW</strong> dar clareza a status e ações em fluxos operacionais?</div>
+          <div class="hmw-tag"><strong>HMW</strong> usar componentes de forma consistente entre sistemas?</div>
+          <div class="hmw-tag"><strong>HMW</strong> entregar UI precisa mesmo quando o escopo é mais visual do que investigativo?</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="develop">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">✦</span></div>
+        <div>
+          <div class="phase-num">Fase 03 · Develop</div>
+          <h2 class="phase-title">Ideação & Prototipagem</h2>
+          <p class="phase-desc">Do problema à solução: explorando possibilidades antes de convergir no melhor caminho.</p>
+        </div>
+      </div>
+<div class="reveal">
+        <span class="label">Processo de Ideação</span>
+<p class="body-text" style="margin-top:0.8rem;">A ideação foi focada em soluções de layout, hierarquia, componentes e estados de tela. As alternativas eram ajustadas conforme requisitos, padrões existentes e validação com o time.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-3 reveal reveal-delay-1">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">✏️</span>
+              <span>Explorações de layout</span>
+            </div>
+            <p class="img-caption">Variações de organização para telas densas.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📐</span>
+              <span>Fluxos por sistema</span>
+            </div>
+            <p class="img-caption">Etapas específicas de RSNG, SEND e CADU.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">🃏</span>
+              <span>Estados e ações</span>
+            </div>
+            <p class="img-caption">Organização de status, botões e áreas de decisão.</p>
+          </div>
+        </div>
+      </div>
+<div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◈</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Wireframes</span>
+<p class="body-text" style="margin-top:0.8rem;">Os wireframes e telas em alta fidelidade foram usados para estruturar informações, ações e estados. O foco foi transformar requisitos em telas claras e consistentes.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-1">
+          <span class="ph-icon">🔲</span>
+          <span>Wireframes / telas estruturadas</span>
+        </div>
+        <p class="img-caption">Estrutura visual de telas para sistemas B3.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">User Flow Redesenhado</span>
+        <p class="body-text" style="margin-top:0.8rem;">Os fluxos foram organizados conforme cada frente: no SEND, por exemplo, considerando evolução de processamento em lote; no CADU, conforme estruturação de telas no contexto UIF-B3.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal reveal-delay-2" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">→</span>
+          <span>Fluxos específicos dos sistemas</span>
+        </div>
+        <p class="img-caption">Fluxos de operação, consulta e processamento conforme cada produto.</p>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-1">
+        <span class="label">Decisões de Design</span>
+        <div class="cards-2" style="margin-top:1rem;">
+          <div class="card">
+            <div class="card-icon">💡</div>
+            <div class="card-title">Decisão 1: UI orientada à operação</div>
+<div class="card-body">A composição priorizou legibilidade, hierarquia e clareza de ação para apoiar tarefas recorrentes.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔀</div>
+            <div class="card-title">Decisão 2: Consistência antes de diferenciação</div>
+            <div class="card-body">Em sistemas corporativos, manter padrões reconhecíveis foi mais importante do que criar variações visuais desnecessárias.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-surface);" id="deliver">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">⟡</span></div>
+        <div>
+          <div class="phase-num">Fase 04 · Deliver</div>
+          <h2 class="phase-title">Design Final</h2>
+          <p class="phase-desc">A solução construída: telas, interações e o sistema que a sustenta.</p>
+        </div>
+      </div>
+<div class="reveal">
+<p class="body-lg">A entrega contemplou telas e evoluções visuais para RSNG, SEND e CADU, respeitando o escopo de cada frente. O case preserva confidencialidade e não apresenta regras internas ou dados sensíveis.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:2rem;">
+        <div class="ph-img reveal reveal-delay-1" style="aspect-ratio: 16/10; min-height: 300px;">
+          <span class="ph-icon">🖥</span>
+          <span>Mosaico de telas dos sistemas</span>
+        </div>
+        <p class="img-caption">Composição de telas anonimizadas para RSNG, SEND e CADU.</p>
+      </div>
+<div class="wrap-wide" style="margin-top:1rem;">
+        <div class="imgs-3 reveal reveal-delay-2">
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>RSNG</span>
+            </div>
+            <p class="img-caption">Estrutura visual para o Sistema Nacional de Gravames.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>SEND</span>
+            </div>
+            <p class="img-caption">Estrutura visual para o Sistema Nacional de Gravames.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img ph-img-sq">
+              <span class="ph-icon">📱</span>
+              <span>CADU</span>
+            </div>
+            <p class="img-caption">Estrutura visual para o Sistema Nacional de Gravames.</p>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3.5rem;" class="reveal reveal-delay-1">
+        <span class="label">Evolução do Design</span>
+        <p class="body-text" style="margin-top:0.6rem; margin-bottom:1.5rem;">A evolução principal foi transformar requisitos e fluxos técnicos em interfaces mais claras, consistentes e utilizáveis para operação.</p>
+        <div class="iteration-block">
+          <div class="iteration-header">
+            <div class="iteration-col before">← Antes</div>
+            <div class="iteration-col after">Depois →</div>
+          </div>
+          <div class="iteration-imgs">
+            <div>
+              <div class="ph-img ph-img-sq">
+                <span class="ph-icon">🔴</span>
+                <span>Requisito / tela base</span>
+              </div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Ponto de partida com necessidade de estruturação visual.</p>
+            </div>
+            <div>
+              <div class="ph-img ph-img-sq">
+                <span class="ph-icon">🟢</span>
+                <span>Tela organizada</span>
+              </div>
+              <p class="img-caption" style="text-align:left; margin-top:0.5rem;">Interface com hierarquia, componentes e ações mais claras.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Design System & Componentes</span>
+        <p class="body-text" style="margin-top:0.6rem;">As frentes utilizaram padrões visuais e componentes existentes, com foco em consistência entre sistemas e redução de exceções visuais.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="ph-img reveal" style="aspect-ratio: 21/9;">
+          <span class="ph-icon">🎨</span>
+          <span>Componentes aplicados em sistemas B3</span>
+        </div>
+        <p class="img-caption">Uso de tabelas, formulários, botões, status e estruturas visuais recorrentes.</p>
+      </div>
+<div class="insight-box reveal reveal-delay-1" style="margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+        <div>
+          <div class="insight-box-label">Protótipo Interativo</div>
+          <p class="body-text">Arquivos Figma e protótipos internos. Links não incluídos por confidencialidade.</p>
+        </div>
+<a href="#" target="_blank" rel="noopener" class="btn-ghost">Ver no Figma →</a>
+      </div>
+
+    </div>
+  </section>
+<section class="section" id="validate">
+    <div class="wrap">
+
+      <div class="phase-header reveal">
+        <div class="phase-badge"><span class="phase-badge-inner">◉</span></div>
+        <div>
+          <div class="phase-num">Fase 05 · Validate</div>
+          <h2 class="phase-title">Teste & Validação</h2>
+          <p class="phase-desc">Colocando o design diante de usuários reais para confirmar hipóteses e descobrir o que ainda precisava melhorar.</p>
+        </div>
+      </div>
+<div class="cards-2 reveal reveal-delay-1">
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">Método de Teste</div>
+<div class="card-body">Validação por revisão interna com produto, tecnologia e stakeholders. Não há evidência documentada aqui de teste formal com usuários finais.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Participantes</div>
+<div class="card-body">Times envolvidos nos sistemas RSNG, SEND e CADU.</div>
+        </div>
+      </div>
+<div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+        <span class="label">O que os testes revelaram</span>
+        <div style="margin-top:1rem;">
+<div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Funcionou</div>
+            <div class="finding-text">A revisão interna ajudou a ajustar aderência entre tela e requisito.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Problema identificado</div>
+            <div class="finding-text">A densidade das telas exigiu cuidado com espaçamento, agrupamento e leitura.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--accent);">
+            <div class="finding-num">⚠ Problema identificado</div>
+            <div class="finding-text">Fluxos de processamento precisaram deixar status e próximos passos claros.</div>
+          </div>
+          <div class="finding" style="border-left-color: var(--color-sage);">
+            <div class="finding-num" style="color:var(--color-sage);">✓ Validado</div>
+            <div class="finding-text">O escopo de algumas frentes era predominantemente UI, e isso foi tratado de forma transparente no case.</div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:2.5rem;" class="reveal reveal-delay-2">
+        <span class="label">Iterações Após o Teste</span>
+        <p class="body-text" style="margin-top:0.8rem;">As iterações ajustaram composição, hierarquia, componentes e estados conforme validações internas.</p>
+      </div>
+
+      <div class="wrap-wide" style="margin-top:1.5rem;">
+        <div class="imgs-2 reveal reveal-delay-3">
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">🔄</span>
+              <span>Estrutura inicial</span>
+            </div>
+            <p class="img-caption">Requisitos ou telas com necessidade de organização visual.</p>
+          </div>
+          <div class="img-with-caption">
+            <div class="ph-img">
+              <span class="ph-icon">✅</span>
+              <span>UI refinada</span>
+            </div>
+            <p class="img-caption">Telas estruturadas com maior consistência e clareza.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section" style="background: var(--bg-secondary);" id="results">
+    <div class="wrap">
+
+      <div class="reveal">
+        <span class="label">✦ Resultados</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Impacto & Métricas</h2>
+<p class="body-lg" style="margin-top:0.5rem;">Não há métricas públicas disponíveis para essas frentes. Os resultados apresentados são contribuições de escopo e entrega, sem extrapolação de impacto.</p>
+      </div>
+
+      <div class="results-bg reveal reveal-delay-1" style="margin-top:2rem;">
+        <div class="results-grid">
+<div class="result-item">
+            <div class="result-value">3 frentes</div>
+            <div class="result-label">RSNG, SEND e CADU</div>
+            <div class="result-context">Atuação em sistemas distintos dentro do contexto B3.</div>
+          </div>
+<div class="result-item">
+            <div class="result-value">UI Focus</div>
+            <div class="result-label">Escopo principal</div>
+            <div class="result-context">Trabalho concentrado em estrutura visual, componentes e telas.</div>
+          </div>
+<div class="result-item">
+            <div class="result-value">Confidencial</div>
+            <div class="result-label">Sem métricas públicas</div>
+            <div class="result-context">Resultados numéricos não são divulgados.</div>
+          </div>
+        </div>
+      </div>
+<div style="margin-top:3rem;" class="reveal reveal-delay-2">
+        <span class="label">Resultados Qualitativos</span>
+        <p class="body-text" style="margin-top:0.8rem;">A atuação contribuiu para dar forma visual e consistência a sistemas corporativos complexos, apoiando entregas de interface em diferentes frentes da B3.</p>
+      </div>
+<blockquote class="pull-quote reveal reveal-delay-2">
+        "Síntese do impacto: nem todo case precisa parecer discovery completo; às vezes o valor está em executar UI complexa com critério e responsabilidade."
+        <cite>— Resumo interpretativo do escopo</cite>
+      </blockquote>
+
+    </div>
+  </section>
+<section class="section" id="learnings">
+    <div class="wrap">
+
+      <div class="reveal">
+        <span class="label">✦ Reflexões</span>
+        <h2 class="section-title" style="margin-top:0.6rem;">Aprendizados</h2>
+<p class="body-lg" style="margin-top:0.5rem;">Este conjunto de frentes reforçou a importância de reconhecer o tipo de contribuição real: aqui, o valor principal esteve em UI, estrutura e consistência.</p>
+      </div>
+
+      <div style="margin-top:2.5rem;" class="reveal reveal-delay-1">
+<div class="learning-item">
+          <div class="learning-num">01</div>
+          <div class="learning-content">
+            <div class="learning-title">Ser honesta sobre escopo também é maturidade</div>
+            <div class="learning-body">Nem todo projeto teve pesquisa ampla ou métrica pública. Isso não diminui a entrega; apenas muda a forma correta de apresentá-la.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">02</div>
+          <div class="learning-content">
+            <div class="learning-title">UI em sistema complexo exige pensamento de produto</div>
+            <div class="learning-body">Mesmo quando o foco é visual, entender regra, fluxo e operação muda a qualidade da tela.</div>
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learning-num">03</div>
+          <div class="learning-content">
+            <div class="learning-title">O que eu faria diferente</div>
+            <div class="learning-body">Guardaria mais documentação de processo e decisões para facilitar a construção posterior do case com evidências visuais.</div>
+          </div>
+        </div>
+      </div>
+<div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">◇</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="reveal">
+        <span class="label">Próximos Passos</span>
+        <p class="body-text" style="margin-top:0.8rem;">Como próximos passos, seria útil consolidar padrões recorrentes dessas frentes em documentação reutilizável para sistemas similares.</p>
+      </div>
+      <div class="cards-3 reveal reveal-delay-1" style="margin-top:1.5rem;">
+        <div class="card">
+          <div class="card-icon">🔮</div>
+          <div class="card-title">Documentar padrões</div>
+          <div class="card-body">Registrar estruturas de telas, estados e ações recorrentes.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Criar biblioteca de exemplos</div>
+          <div class="card-body">Organizar exemplos anonimizados de telas densas e fluxos operacionais.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">Revisar consistência</div>
+          <div class="card-body">Comparar sistemas para reduzir variações visuais desnecessárias.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+<section class="section-sm" style="background: var(--bg-surface);">
+    <div class="wrap">
+      <div class="case-nav reveal">
+<a href="case-quod-design-system.html" class="case-nav-item">
+          <div class="case-nav-dir">← Case Anterior</div>
+          <div class="case-nav-title">Quod Design System</div>
+          <div class="case-nav-arrow">←</div>
+        </a>
+<a href="case-speedo-ecommerce.html" class="case-nav-item next">
+          <div class="case-nav-dir">Próximo Case →</div>
+          <div class="case-nav-title">Speedo E-commerce</div>
+          <div class="case-nav-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="back-section reveal">
+        <a href="../index.html" class="btn-ghost">← Voltar ao Portfólio</a>
+      </div>
+    </div>
+  </section>
+<footer class="footer">
+    <div class="wrap-full">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Stephany <span>Palos</span></div>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
+        </div>
+        <div class="footer-copy">© 2026 Stephany Palos</div>
+      </div>
+    </div>
+  </footer>
+<script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Reading progress bar
+    const bar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (scrollTop / docH * 100) + '%';
+    }, { passive: true });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.10, rootMargin: '0px 0px -30px 0px' }
+    );
+    reveals.forEach(el => obs.observe(el));
+
+    // Process tracker — highlight based on scroll position
+    const phases = ['challenge','discover','define','develop','deliver','validate','results'];
+    const steps  = document.querySelectorAll('.pt-step');
+    const sectionObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          const idx = phases.indexOf(id);
+          if (idx === -1) return;
+          steps.forEach((s, i) => {
+            s.classList.remove('active','done');
+            if (i < idx) s.classList.add('done');
+            if (i === idx) s.classList.add('active');
+          });
+        });
+      },
+      { threshold: 0.3 }
+    );
+    phases.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+  </script>
+
+</body>
+</html>
