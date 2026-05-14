@@ -1,21 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- PREENCHER: título e descrição do artigo -->
-  <meta name="description" content="[Descrição do artigo — 1 frase para SEO]" />
-  <meta name="author" content="Stephany Palos" />
-  <meta property="og:title" content="[Título do Artigo] — Stephany Palos" />
-  <meta property="og:description" content="[Descrição breve do artigo]" />
-  <meta property="og:type" content="article" />
-  <title>Handoff não é entrega de tela: é alinhamento de contexto — Stephany Palos</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- PREENCHER: título e descrição do artigo -->
+<meta content="Uma reflexão prática sobre por que handoff não é só entrega de telas, mas alinhamento de contexto, regras, estados e critérios para desenvolvimento e QA." name="description"/>
+<meta content="Stephany Palos" name="author"/>
+<meta content="Handoff não é entrega de tela: é alinhamento de contexto — Stephany Palos" property="og:title"/>
+<meta content="Devs e QAs precisam de mais do que telas: precisam entender regras, estados, critérios de qualidade e a inteligência por trás da interface." property="og:description"/>
+<meta content="article" property="og:type"/>
+<title>Handoff não é entrega de tela: é alinhamento de contexto — Stephany Palos</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&amp;display=swap" rel="stylesheet"/>
+<style>
     /* ============================================================
        DESIGN TOKENS — espelhados do portfólio principal
     ============================================================ */
@@ -889,23 +888,20 @@
     ::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
   </style>
 </head>
-
 <body>
-
-  <!-- NAV -->
-  <nav class="nav" id="nav">
-    <div class="wrap-full">
-      <div class="nav-inner">
-        <a href="../articles.html" class="nav-back">← Artigos</a>
-        <a href="../index.html" class="nav-logo">Stephany <span>Palos</span></a>
-        <div class="nav-progress" title="Progresso de leitura">
-          <div class="nav-progress-bar" id="progressBar"></div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ============================================================
+<!-- NAV -->
+<nav class="nav" id="nav">
+<div class="wrap-full">
+<div class="nav-inner">
+<a class="nav-back" href="../articles.html">← Artigos</a>
+<a class="nav-logo" href="../index.html">Stephany <span>Palos</span></a>
+<div class="nav-progress" title="Progresso de leitura">
+<div class="nav-progress-bar" id="progressBar"></div>
+</div>
+</div>
+</div>
+</nav>
+<!-- ============================================================
        HERO DO ARTIGO
        O que preencher:
          - Categoria (Ex: Design, Research, Processo, Produto)
@@ -913,336 +909,290 @@
          - Subtítulo/lead (1 frase que expande o título)
          - Data, tempo de leitura, tags
   ============================================================ -->
-  <section class="hero">
-    <div class="wrap-full">
-      <div class="hero-inner">
-        <div class="hero-eyebrow">
-          <div class="hero-eyebrow-line"></div>
-          <!-- PREENCHER: categoria do artigo -->
-          <span class="hero-category">Research · Artigo</span>
-        </div>
-        <!-- PREENCHER: título principal do artigo -->
-        <h1 class="hero-title">Handoff não é entrega de tela: é alinhamento de contexto</h1>
-        <!-- PREENCHER: subtítulo/lead — expande o título em 1 frase -->
-        <p class="hero-subtitle">[Lead do artigo — 1 frase que contextualiza e convida à leitura.]</p>
-        <div class="hero-meta">
-          <span class="hero-meta-item">Stephany Palos</span>
-          <span class="hero-meta-dot"></span>
-          <!-- PREENCHER: mês e ano de publicação -->
-          <span class="hero-meta-item">[Mês de Publicação, 20XX]</span>
-          <span class="hero-meta-dot"></span>
-          <!-- PREENCHER: tempo estimado de leitura -->
-          <span class="hero-meta-item">[X] min de leitura</span>
-        </div>
-        <div class="article-tags-hero">
-          <!-- PREENCHER: tags do artigo (de 1 a 4) -->
-          <span class="article-tag">[Tag 1]</span>
-          <span class="article-tag">[Tag 2]</span>
-          <span class="article-tag">[Tag 3]</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
+<section class="hero">
+<div class="wrap-full">
+<div class="hero-inner">
+<div class="hero-eyebrow">
+<div class="hero-eyebrow-line"></div>
+<!-- PREENCHER: categoria do artigo -->
+<span class="hero-category">Handoff · Design System · QA</span>
+</div>
+<!-- PREENCHER: título principal do artigo -->
+<h1 class="hero-title">Handoff não é entrega de tela: é alinhamento de contexto</h1>
+<!-- PREENCHER: subtítulo/lead — expande o título em 1 frase -->
+<p class="hero-subtitle">O Figma mostra a experiência visível, mas são as regras, estados e critérios invisíveis que ajudam o time a construir um produto sólido.</p>
+<div class="hero-meta">
+<span class="hero-meta-item">Stephany Palos</span>
+<span class="hero-meta-dot"></span>
+<!-- PREENCHER: mês e ano de publicação -->
+<span class="hero-meta-item">Abril, 2026</span>
+<span class="hero-meta-dot"></span>
+<!-- PREENCHER: tempo estimado de leitura -->
+<span class="hero-meta-item">6 min de leitura</span>
+</div>
+<div class="article-tags-hero">
+<!-- PREENCHER: tags do artigo (de 1 a 4) -->
+<span class="article-tag">Product Design</span>
+<span class="article-tag">Design Systems</span>
+<span class="article-tag">Quality Assurance</span>
+<span class="article-tag">Handoff</span></div>
+</div>
+</div>
+</section>
+<!-- ============================================================
        ARTICLE LAYOUT — corpo + sidebar
   ============================================================ -->
-  <div class="wrap-full">
-    <div class="article-layout">
-
-      <!-- ============================================================
+<div class="wrap-full">
+<div class="article-layout">
+<!-- ============================================================
            CORPO DO ARTIGO
       ============================================================ -->
-      <article class="article-body" id="articleBody">
+<article class="article-body" id="articleBody">
+<div class="article-cover reveal">
+  <img src="assets/articles/handoff-contexto/01-handoff-alem-do-figma.png" alt="Handoff além do Figma com camadas de contexto para implementação" loading="lazy" />
+</div>
+<h2 id="section-intro">Handoff não é só a entrega de uma tela bonita</h2>
+<p>Handoff não é só a entrega de uma tela bonita. É a organização das decisões que permitem que o produto seja construído com clareza, consistência e qualidade.</p>
+<p>Para muitos designers, o handoff é o momento de “entregar as chaves”: o protótipo está visualmente impecável, as cores seguem o guia de estilo e o fluxo principal parece intuitivo. No entanto, para quem está na ponta da implementação e da qualidade, esse momento muitas vezes se assemelha a receber uma caixa preta. A interface é uma promessa bonita por fora, mas a lógica interna ainda é um mistério.</p>
+<p>Esse abismo entre o visual e o funcional costuma ser uma das maiores fontes de retrabalho, bugs e fricção nos times de produto. A tela mostra o que deveria aparecer, mas nem sempre explica o que sustenta aquela experiência: regras, exceções, estados, validações, dependências técnicas e critérios de aceite.</p>
+<div class="insight"><p>Se o handoff é apenas um link do Figma, o time não recebe um projeto completo. Recebe um quebra-cabeça.</p></div>
+<p>Com base em conversas e entrevistas com profissionais de Backend, Frontend e QA, uma percepção ficou bastante clara: o que define o sucesso de uma entrega não é apenas a estética das telas, mas a clareza da inteligência por trás delas.</p>
 
-        <!-- OPCIONAL: Imagem de capa interna -->
-        <div class="article-cover reveal">
-          <!--
-            IMAGEM DE CAPA:
-            Descomente e preencha o src abaixo para adicionar imagem de capa.
-            <img src="../assets/artigo-capa.jpg" alt="[Descrição da imagem]" />
-          -->
-          <div class="article-cover-placeholder">
-            Imagem de capa (opcional)<br/>
-            <small>Substitua este bloco por &lt;img src="../assets/sua-imagem.jpg"&gt;</small>
-          </div>
-        </div>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/02-problemas-invisiveis.png" alt="Camadas invisíveis por trás de campos de formulário" loading="lazy" />
+  <figcaption>Camadas invisíveis de validação, limites, grid, tokens e regras condicionais por trás de um formulário.</figcaption>
+</figure>
+<h2 id="section-regra-oculta">O UI está resolvido, o problema é a regra oculta</h2>
+<p>Por trás de cada campo existe uma camada de decisões que precisa estar clara antes da implementação: validações, limites, restrições, grid, espaçamentos, lógicas condicionais e regras de negócio.</p>
+<p>Um padrão recorrente nas falas de desenvolvedores é que o aspecto visual raramente é o principal problema. O gargalo aparece quando o design foca apenas no “pixel perfect” e deixa o desenvolvedor diante de perguntas que ainda não foram respondidas.</p>
+<ul><li>O que acontece se esse campo vier vazio?</li><li>Existe limite de caracteres?</li><li>O campo aceita zero, número negativo ou caracteres especiais?</li><li>Essa regra vale para todos os perfis de usuário?</li><li>Esse comportamento muda em mobile?</li><li>O espaçamento segue o grid ou foi ajustado manualmente?</li></ul>
+<p>A ausência dessas definições obriga o desenvolvedor a interromper o fluxo para buscar contexto com o designer, PO, QA ou alguém do negócio. E, em alguns casos, gera uma tensão entre visual e valor: a tela parece correta, mas não está alinhada à lógica do sistema.</p>
+<blockquote>“O ‘ok’ dá pra implementar, mas com dúvidas; o ‘muito bom’ terá uma implementação mais consistente.”<cite>— Desenvolvedor backend/fullstack entrevistado</cite></blockquote>
+<p>Sem entender a lógica por trás da interface, o time pode até implementar algo visualmente parecido, mas tecnicamente frágil. E é aí que o handoff deixa de ser um detalhe operacional e passa a ser uma parte estratégica da qualidade do produto.</p>
 
-        <!-- ============================================================
-             SEÇÃO 1
-             Instrução: cada <h2> vira um item do sumário lateral (ToC) automaticamente.
-             Mantenha o formato: id="section-[nome]" para o JS funcionar.
-        ============================================================ -->
-        <h2 id="section-intro">
-          <!-- PREENCHER: título da primeira seção -->
-          [Título da Seção 1 — ex: O contexto do problema]
-        </h2>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/03-caminho-feliz.png" alt="Fluxo de caminho feliz expandido em máquina de estados" loading="lazy" />
+  <figcaption>Um fluxo simples se desdobra em estados de sucesso, carregamento, vazio, erro, falha de API, entrada inválida e permissão negada.</figcaption>
+</figure>
+<h2 id="section-caminho-feliz">O abismo do caminho feliz</h2>
+<p>O fluxo ideal é só o começo. Um produto real precisa prever sucesso, carregamento, estado vazio, erro, falha de API, entrada inválida, permissão negada e vários outros cenários que raramente aparecem no primeiro desenho da jornada.</p>
+<p>Para profissionais de QA, uma das maiores dores está na invisibilidade dos cenários negativos. O handoff tradicional costuma apresentar o caminho feliz: o usuário entende tudo, os dados chegam corretamente, a API responde, o formulário é preenchido sem erro e a jornada termina como esperado.</p>
+<p>Mas produto real não vive só de caminho feliz.</p>
+<div class="insight"><p>Uma tela não é uma imagem estática. Ela é uma pequena máquina de estados.</p></div>
+<p>Quando o design não explicita o que acontece quando uma busca não retorna resultados, quando uma API falha ou quando o usuário não tem permissão para executar uma ação, o QA fica sem base para criar critérios de aceite. A ausência de documentação força o time de qualidade a investigar comportamento no código, em requisitos espalhados ou em conversas soltas.</p>
+<blockquote>“Você não sabe o que o cara fez, você não sabe como ele fez, você não sabe por que ele fez… como é que eu vou testar?”<cite>— Profissional de QA entrevistado</cite></blockquote>
+<p>A frase pode até provocar riso, mas é aquele riso de desespero de quem já viveu uma entrega cheia de lacunas. Se o designer entra de férias, se o PO muda de contexto ou se o dev que implementou sai do projeto, onde fica a inteligência daquela decisão?</p>
+<p>Ao adotar uma postura de shift-left, envolvendo QA desde a concepção, o designer ajuda a mapear esses cenários antes que eles cheguem ao ambiente de teste. Isso reduz retrabalho, melhora a previsibilidade da entrega e transforma o handoff em um espaço de alinhamento real.</p>
 
-        <p>
-          <!-- PREENCHER: Parágrafo de abertura — será renderizado em itálico e maior, como lead.
-               1-2 frases que resumem o ponto central do artigo. -->
-          [Parágrafo de abertura do artigo — o primeiro parágrafo será destacado automaticamente em fonte maior e itálico.]
-        </p>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/04-informacao-sem-contexto.png" alt="Comparação entre informação sem contexto e informação com contexto" loading="lazy" />
+  <figcaption>Dados soltos geram ruído; quando conectados à jornada, às regras e ao impacto, viram entendimento compartilhado.</figcaption>
+</figure>
+<h2 id="section-contexto">Informação sem contexto é apenas ruído</h2>
+<p>Componentes soltos geram ruído. Quando conectados à jornada, às regras e ao impacto no sistema, eles viram entendimento compartilhado.</p>
+<p>Jogar componentes no Figma ou links no Jira sem o devido contexto técnico é pouco eficiente. Desenvolvedores de frontend costumam precisar entender não apenas o componente isolado, mas o ambiente em que ele vive: onde aparece, quais estados possui, o que muda quando uma regra é acionada e quais outras partes do sistema podem ser impactadas.</p>
+<p>Alterar um detalhe em um select, por exemplo, pode parecer pequeno no frame. Mas esse detalhe pode afetar padrões de formulário, validações, acessibilidade, automações, testes e outros fluxos que usam o mesmo componente.</p>
+<p>Por isso, o handoff precisa deixar de ser um upload de arquivos e se aproximar de um grooming de negócio e tecnologia. A passagem de bastão deve permitir que o time discuta viabilidade técnica, regra, comportamento, impacto e critérios de qualidade.</p>
+<div class="insight"><p>Informação sem o “porquê” vira ruído. E ruído vira interpretação divergente.</p></div>
 
-        <p>
-          <!-- PREENCHER: Desenvolvimento da seção -->
-          [Segundo parágrafo da seção. Desenvolva o argumento central. Use linguagem direta, pessoal e com ponto de vista claro. Evite parágrafos muito longos — quebre em 3-4 frases.]
-        </p>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/05-handoff-como-fundacao.png" alt="Handoff habilitando automação de testes com data-test IDs" loading="lazy" />
+  <figcaption>Especificação, componentes, data-test IDs e casos de teste conectados para uma automação mais confiável.</figcaption>
+</figure>
+<h2 id="section-automacao">O handoff como fundação para automação</h2>
+<p>Quando a especificação conecta componentes, estados, identificadores técnicos e casos de teste, o handoff deixa de ser interpretação e passa a sustentar automação confiável.</p>
+<p>Uma das maiores oportunidades perdidas no handoff é a rastreabilidade. Identificadores técnicos, como data-test IDs, muitas vezes nascem de forma improvisada durante o desenvolvimento. O problema é que, quando esses identificadores não seguem uma lógica compartilhada, qualquer mudança de classe, estrutura ou componente pode quebrar automações de teste.</p>
+<p>Se o designer atua mais próximo da lógica de produto e tecnologia, pode antecipar esses ganchos de teste desde o Figma. Isso aproxima o trabalho do conceito de especificação guiando a construção: o time deixa de implementar a partir de suposições e passa a trabalhar com critérios mais claros.</p>
+<ul><li>Quais componentes precisam de identificadores?</li><li>Quais estados devem ser testados?</li><li>Quais mensagens de erro precisam ser validadas?</li><li>Quais fluxos devem considerar permissão, falha ou indisponibilidade?</li><li>Quais elementos são críticos para automação de QA?</li></ul>
+<p>Uma tabela de data-test por componente, por exemplo, pode economizar horas de trabalho para QA e Frontend. Mais do que isso: evita que cada pessoa invente uma nomenclatura diferente na hora da implementação.</p>
 
-        <!-- OPCIONAL: Insight/destaque -->
-        <div class="insight">
-          <p>[Destaque uma ideia central do artigo neste bloco. Funciona como pullquote visual dentro do texto.]</p>
-        </div>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/06-design-que-conecta.png" alt="Sistema de tokens conectando design, documentação e código" loading="lazy" />
+  <figcaption>Tokens como fonte única de verdade entre UI, sistema visual, documentação e implementação.</figcaption>
+</figure>
+<h2 id="section-tokens">Tokens e Design Systems: onde o amor acontece</h2>
+<p>Tokens funcionam como uma fonte única de verdade. Eles conectam decisões visuais, componentes, documentação e código em uma mesma linguagem.</p>
+<p>Quando um projeto utiliza Design Tokens bem estruturados, o impacto na velocidade e na consistência aparece rapidamente. O time deixa de caçar hexadecimais, tamanhos de fonte e espaçamentos manualmente, porque passa a operar dentro de uma fundação técnica documentada.</p>
+<p>Mas essa entrega precisa ir além do visual do Figma. Desenvolvedores não precisam apenas ver que uma cor foi usada; precisam saber qual token representa aquela decisão, em que contexto ele deve ser aplicado e como isso chega no código.</p>
+<p>É aqui que o Design System começa a mostrar seu valor real. Ele não serve apenas para acelerar o designer. Ele também reduz ambiguidade para desenvolvimento, QA, documentação e automação.</p>
+<blockquote>“Dá vontade de beijar o designer que fez isso.”<cite>— Desenvolvedor frontend entrevistado, sobre trabalhar com um sistema bem organizado</cite></blockquote>
+<p>A frase é engraçada, mas diz muito. Quando a fundação está clara, o desenvolvedor foca menos no “o que fazer” e mais no “como fazer”. A implementação deixa de depender de adivinhação e passa a seguir uma linguagem compartilhada.</p>
 
-        <p>[Continue o desenvolvimento da seção 1.]</p>
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/07-handoff-e-uma-conversa.png" alt="Time de design desenvolvimento e QA alinhando especificação viva de produto" loading="lazy" />
+  <figcaption>A especificação viva aproxima áreas, reduz suposições e melhora a qualidade da entrega.</figcaption>
+</figure>
+<h2 id="section-conclusao">O handoff é uma conversa, não um arquivo</h2>
+<p>Um bom handoff não é uma transferência de arquivo. É uma conversa viva entre Design, Desenvolvimento e QA sobre comportamento, regras, estados e critérios de qualidade.</p>
+<p>Para elevar o nível das entregas, o Product Designer precisa assumir responsabilidade sobre a inteligência do sistema. Isso significa documentar lógica, prever estados de erro, explicitar critérios de aceite e fornecer contexto completo para quem constrói e testa.</p>
+<p>Apesar das ferramentas prometerem soluções mágicas, existe um ceticismo saudável entre profissionais experientes. QAs e desenvolvedores sabem que ferramenta nenhuma resolve sozinha problemas de colaboração humana. O handoff de sucesso é aquele que trata Devs e QAs como usuários do design.</p>
+<p>Na próxima entrega, vale fazer uma pergunta simples: estou enviando apenas telas ou estou entregando a inteligência necessária para o time construir algo sólido?</p>
+<div class="insight"><p>O protótipo mostra a experiência visível. As peças invisíveis — regras, casos de borda, critérios de QA, estados de erro e especificações técnicas — garantem que ela funcione de verdade.</p></div>
 
-        <!-- ============================================================
-             SEÇÃO 2
-        ============================================================ -->
-        <h2 id="section-desenvolvimento">
-          [Título da Seção 2]
-        </h2>
-
-        <p>[Abertura da seção 2.]</p>
-
-        <p>[Desenvolvimento.]</p>
-
-        <!-- OPCIONAL: Lista -->
-        <ul>
-          <li>[Item 1 da lista]</li>
-          <li>[Item 2 da lista]</li>
-          <li>[Item 3 da lista]</li>
-        </ul>
-
-        <!-- OPCIONAL: Imagem dentro do artigo -->
-        <figure>
-          <!--
-            INSTRUÇÃO: substitua o bloco abaixo por uma imagem real:
-            <img src="../assets/imagem-artigo.jpg" alt="Descrição" />
-          -->
-          <div class="article-cover" style="aspect-ratio: 4/3; margin-bottom: 0;">
-            <div class="article-cover-placeholder">
-              Imagem de apoio<br/><small>Diagrama, print, ilustração ou foto</small>
-            </div>
-          </div>
-          <figcaption>[Legenda da imagem — descreva o que o leitor está vendo]</figcaption>
-        </figure>
-
-        <!-- ============================================================
-             SEÇÃO 3
-        ============================================================ -->
-        <h2 id="section-argumentos">
-          [Título da Seção 3]
-        </h2>
-
-        <p>[Desenvolvimento da seção 3.]</p>
-
-        <!-- OPCIONAL: Citação externa -->
-        <blockquote>
-          "[PREENCHER: citação de referência externa, de alguém da área ou de uma fonte confiável]"
-          <cite>— [Nome / Fonte]</cite>
-        </blockquote>
-
-        <p>[Continuação após a citação — o que você pensa sobre ela.]</p>
-
-        <!-- ============================================================
-             SEÇÃO 4 — Conclusão
-        ============================================================ -->
-        <h2 id="section-conclusao">
-          [Título da Seção Final — ex: O que fica]
-        </h2>
-
-        <p>[Parágrafo de encerramento — recapitule o ponto central e deixe uma ideia que o leitor leva consigo.]</p>
-
-        <hr />
-
-        <!-- Nav entre artigos -->
-        <div class="article-nav">
-          <!-- PREENCHER: artigo anterior -->
-          <a href="article-template.html" class="article-nav-item">
-            <div class="article-nav-dir">← Artigo Anterior</div>
-            <div class="article-nav-title">[Título do Artigo Anterior]</div>
-          </a>
-          <!-- PREENCHER: próximo artigo -->
-          <a href="article-template.html" class="article-nav-item next">
-            <div class="article-nav-dir">Próximo Artigo →</div>
-            <div class="article-nav-title">[Título do Próximo Artigo]</div>
-          </a>
-        </div>
-
-        <!-- Rodapé do artigo — autora -->
-        <div class="article-footer">
-          <div class="article-author">
-            <div class="author-avatar">
-              <!--
+<figure class="reveal">
+  <img src="assets/articles/handoff-contexto/08-prototipo-solucao-completa.png" alt="Protótipo conectado a peças de contexto que formam uma solução completa" loading="lazy" />
+  <figcaption>O protótipo mostra a experiência; as peças invisíveis garantem que ela funcione de verdade.</figcaption>
+</figure>
+<p>Este artigo foi publicado originalmente no Medium. Você também pode ler a versão original por lá:</p>
+<p><a class="btn-ghost" href="https://medium.com/vagas-ux/al%C3%A9m-do-figma-por-que-devs-e-qas-precisam-de-mais-do-que-telas-4111b90d4da1" rel="noopener" target="_blank">Ler artigo no Medium →</a></p>
+<hr/>
+<div class="article-nav"><a class="article-nav-item" href="article-design-system-ia.html"><div class="article-nav-dir">← Artigo Anterior</div><div class="article-nav-title">Design System, IA e a importância de dar contexto para a máquina</div></a><a class="article-nav-item next" href="../articles.html"><div class="article-nav-dir">Mais Artigos →</div><div class="article-nav-title">Ver todos os artigos</div></a></div>
+<div class="article-footer">
+<div class="article-author">
+<div class="author-avatar">
+<!--
                 FOTO: substitua pelo src da sua foto:
                 <img src="../assets/foto-stephany.jpg" alt="Stephany Palos" onerror="this.style.display='none'" />
               -->
-              <span class="author-avatar-fallback">SP</span>
-            </div>
-            <div>
-              <div class="author-name">Stephany Palos</div>
-              <div class="author-role">UX &amp; Product Designer</div>
-              <div class="author-links">
-                <a href="https://www.linkedin.com/in/stephany-palos-ux-designer/" target="_blank" rel="noopener" class="author-link">LinkedIn</a>
-                <a href="https://medium.com/@stephanypalos" target="_blank" rel="noopener" class="author-link">Medium</a>
-                <a href="../index.html" class="author-link">Portfólio</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </article><!-- /article-body -->
-
-      <!-- ============================================================
+<span class="author-avatar-fallback">SP</span>
+</div>
+<div>
+<div class="author-name">Stephany Palos</div>
+<div class="author-role">UX &amp; Product Designer</div>
+<div class="author-links">
+<a class="author-link" href="https://www.linkedin.com/in/stephany-palos-ux-designer/" rel="noopener" target="_blank">LinkedIn</a>
+<a class="author-link" href="https://medium.com/vagas-ux/al%C3%A9m-do-figma-por-que-devs-e-qas-precisam-de-mais-do-que-telas-4111b90d4da1" rel="noopener" target="_blank">Medium</a>
+<a class="author-link" href="../index.html">Portfólio</a>
+</div>
+</div>
+</div>
+</div></article><!-- /article-body -->
+<!-- ============================================================
            SIDEBAR
       ============================================================ -->
-      <aside class="sidebar" id="sidebar">
-
-        <!-- Bloco: Sobre a autora -->
-        <div class="sidebar-block reveal">
-          <div class="sidebar-block-header">
-            <div class="sidebar-block-title">✦ Sobre a Autora</div>
-          </div>
-          <div class="sidebar-block-body">
-            <div class="sidebar-author">
-              <div class="sidebar-author-avatar">
-                <!--
+<aside class="sidebar" id="sidebar">
+<!-- Bloco: Sobre a autora -->
+<div class="sidebar-block reveal">
+<div class="sidebar-block-header">
+<div class="sidebar-block-title">✦ Sobre a Autora</div>
+</div>
+<div class="sidebar-block-body">
+<div class="sidebar-author">
+<div class="sidebar-author-avatar">
+<!--
                   FOTO: <img src="../assets/foto-stephany.jpg" alt="SP" onerror="this.style.display='none'" />
                 -->
-                <span style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 600; color: var(--color-ochre);">SP</span>
-              </div>
-              <div>
-                <div class="sidebar-author-name">Stephany Palos</div>
-                <div class="sidebar-author-role">UX &amp; Product Designer</div>
-              </div>
-            </div>
-            <p class="sidebar-author-bio">
-              Designer de produto com foco em discovery, estratégia e entrega. Escrevo sobre processo, decisões de design e o que aprendo construindo produtos reais.
-            </p>
-            <a href="https://www.linkedin.com/in/stephany-palos-ux-designer/" target="_blank" rel="noopener" class="sidebar-linkedin">
+<span style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 600; color: var(--color-ochre);">SP</span>
+</div>
+<div>
+<div class="sidebar-author-name">Stephany Palos</div>
+<div class="sidebar-author-role">UX &amp; Product Designer</div>
+</div>
+</div>
+<p class="sidebar-author-bio">Product Designer Sênior. Escrevo sobre UX, Design Systems, handoff, IA e formas mais claras de conectar design, produto e tecnologia.</p>
+<a class="sidebar-linkedin" href="https://www.linkedin.com/in/stephany-palos-ux-designer/" rel="noopener" target="_blank">
               LinkedIn →
-            </a>
-          </div>
-        </div>
-
-        <!-- Bloco: Sumário do artigo (ToC) -->
-        <div class="sidebar-block reveal reveal-delay-1" id="tocBlock">
-          <div class="sidebar-block-header">
-            <div class="sidebar-block-title">Neste Artigo</div>
-          </div>
-          <div class="sidebar-block-body">
-            <ul class="toc-list" id="tocList">
-              <!-- Preenchido automaticamente via JS -->
-            </ul>
-          </div>
-        </div>
-
-        <!-- Bloco: Índice de artigos -->
-        <div class="sidebar-block reveal reveal-delay-2">
-          <div class="sidebar-block-header">
-            <div class="sidebar-block-title">Mais Artigos</div>
-          </div>
-          <div class="sidebar-block-body">
-            <ul class="article-index-list">
-
-              <!-- PREENCHER: liste os artigos publicados aqui.
+            </a><a class="sidebar-linkedin" href="https://medium.com/vagas-ux/al%C3%A9m-do-figma-por-que-devs-e-qas-precisam-de-mais-do-que-telas-4111b90d4da1" rel="noopener" target="_blank">Ler no Medium →</a>
+</div>
+</div>
+<!-- Bloco: Sumário do artigo (ToC) -->
+<div class="sidebar-block reveal reveal-delay-1" id="tocBlock">
+<div class="sidebar-block-header">
+<div class="sidebar-block-title">Neste Artigo</div>
+</div>
+<div class="sidebar-block-body">
+<ul class="toc-list" id="tocList">
+<!-- Preenchido automaticamente via JS -->
+</ul>
+</div>
+</div>
+<!-- Bloco: Índice de artigos -->
+<div class="sidebar-block reveal reveal-delay-2">
+<div class="sidebar-block-header">
+<div class="sidebar-block-title">Mais Artigos</div>
+</div>
+<div class="sidebar-block-body">
+<ul class="article-index-list">
+<!-- PREENCHER: liste os artigos publicados aqui.
                    O artigo atual deve ter class="article-index-link active"
                    Os outros são links normais. -->
-
-              <li class="article-index-item">
-                <a href="article-design-system-ia.html" class="article-index-link">
+<li class="article-index-item">
+<a class="article-index-link" href="article-design-system-ia.html">
                   Design System, IA e a importância de dar contexto para a máquina
                 </a>
-                <div class="article-index-meta">Design · Jan 2025</div>
-              </li>
-              <li class="article-index-item">
-                <a href="article-handoff-contexto.html" class="article-index-link active">
+<div class="article-index-meta">Design System · 2026</div>
+</li>
+<li class="article-index-item">
+<a class="article-index-link active" href="article-handoff-contexto.html">
                   Handoff não é entrega de tela: é alinhamento de contexto
                 </a>
-                <div class="article-index-meta">Research · 2025</div>
-              </li>
-              <li class="article-index-item">
-                <a href="article-portfolio-produto.html" class="article-index-link">
+<div class="article-index-meta">Handoff · Abr 2026</div>
+</li>
+<li class="article-index-item">
+<a class="article-index-link" href="article-portfolio-produto.html">
                   Portfólio de produto: menos volume, mais raciocínio
                 </a>
-                <div class="article-index-meta">Portfolio · 2024</div>
-              </li>
-              <!-- Adicione mais artigos aqui conforme publicar -->
-
-            </ul>
-            <a href="../articles.html" class="btn-ghost" style="margin-top:1.2rem; width:100%; justify-content:center; font-size:0.62rem;">
+<div class="article-index-meta">Portfolio · 2024</div>
+</li>
+<!-- Adicione mais artigos aqui conforme publicar -->
+</ul>
+<a class="btn-ghost" href="../articles.html" style="margin-top:1.2rem; width:100%; justify-content:center; font-size:0.62rem;">
               Ver todos →
             </a>
-          </div>
-        </div>
-
-        <!-- Bloco: Portfólio -->
-        <div class="sidebar-block reveal reveal-delay-2">
-          <div class="sidebar-block-header">
-            <div class="sidebar-block-title">Work</div>
-          </div>
-          <div class="sidebar-block-body" style="display:flex; flex-direction:column; gap:0.8rem;">
-            <p style="font-size:var(--text-small); color:var(--text-secondary); line-height:1.6;">
+</div>
+</div>
+<!-- Bloco: Portfólio -->
+<div class="sidebar-block reveal reveal-delay-2">
+<div class="sidebar-block-header">
+<div class="sidebar-block-title">Work</div>
+</div>
+<div class="sidebar-block-body" style="display:flex; flex-direction:column; gap:0.8rem;">
+<p style="font-size:var(--text-small); color:var(--text-secondary); line-height:1.6;">
               Cases de produto, process e estratégia de design.
             </p>
-            <a href="../index.html#work" class="btn-ghost" style="width:100%; justify-content:center; font-size:0.62rem;">
+<a class="btn-ghost" href="../index.html#work" style="width:100%; justify-content:center; font-size:0.62rem;">
               Ver Portfólio →
             </a>
-          </div>
-        </div>
-
-      </aside>
-    </div><!-- /article-layout -->
-  </div>
-
-  <!-- ============================================================
+</div>
+</div>
+</aside>
+</div><!-- /article-layout -->
+</div>
+<!-- ============================================================
        ARTIGOS RELACIONADOS
   ============================================================ -->
-  <section class="related">
-    <div class="wrap-full">
-      <div class="related-header reveal">
-        <div class="related-label">✦ Continue Lendo</div>
-        <h2 class="related-title">Artigos Relacionados</h2>
-      </div>
-      <div class="related-grid">
-        <!-- PREENCHER: substitua pelos artigos mais relacionados ao artigo atual -->
-        <a href="article-design-system-ia.html" class="article-card reveal">
-          <div class="article-date">Design · 2025</div>
-          <h3 class="article-title">Design System, IA e a importância de dar contexto para a máquina</h3>
-          <p class="article-excerpt">Reflexão sobre como prompts e padrões influenciam interfaces geradas com apoio de IA.</p>
-          <span class="article-link">Ler artigo <span>→</span></span>
-        </a>
-        <a href="article-handoff-contexto.html" class="article-card reveal reveal-delay-1">
-          <div class="article-date">Research · 2025</div>
-          <h3 class="article-title">Handoff não é entrega de tela: é alinhamento de contexto</h3>
-          <p class="article-excerpt">Especificações, critérios de QA, regras de negócio e decisões que precisam acompanhar uma interface.</p>
-          <span class="article-link">Ler artigo <span>→</span></span>
-        </a>
-        <a href="article-portfolio-produto.html" class="article-card reveal reveal-delay-2">
-          <div class="article-date">Portfolio · 2024</div>
-          <h3 class="article-title">Portfólio de produto: menos volume, mais raciocínio</h3>
-          <p class="article-excerpt">Como apresentar contexto, problema, decisão e impacto sem depender apenas de telas finais.</p>
-          <span class="article-link">Ler artigo <span>→</span></span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="wrap-full">
-      <div class="footer-inner">
-        <div>
-          <div class="footer-logo">Stephany <span>Palos</span></div>
-          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
-        </div>
-        <div class="footer-copy">© 2025 Stephany Palos</div>
-      </div>
-    </div>
-  </footer>
-
-  <script>
+<section class="related">
+<div class="wrap-full">
+<div class="related-header reveal">
+<div class="related-label">✦ Continue Lendo</div>
+<h2 class="related-title">Artigos Relacionados</h2>
+</div>
+<div class="related-grid">
+<!-- PREENCHER: substitua pelos artigos mais relacionados ao artigo atual -->
+<a class="article-card reveal" href="article-design-system-ia.html">
+<div class="article-date">Design System · 2026</div>
+<h3 class="article-title">Design System, IA e a importância de dar contexto para a máquina</h3>
+<p class="article-excerpt">Como Design Systems precisam se tornar infraestrutura de decisão para orientar também agentes de IA.</p>
+<span class="article-link">Ler artigo <span>→</span></span>
+</a>
+<a class="article-card reveal reveal-delay-1" href="article-handoff-contexto.html">
+<div class="article-date">Handoff · Abr 2026</div>
+<h3 class="article-title">Handoff não é entrega de tela: é alinhamento de contexto</h3>
+<p class="article-excerpt">Por que Devs e QAs precisam de regras, estados, critérios de qualidade e contexto além das telas.</p>
+<span class="article-link">Ler artigo <span>→</span></span>
+</a>
+<a class="article-card reveal reveal-delay-2" href="article-portfolio-produto.html">
+<div class="article-date">Portfolio · 2024</div>
+<h3 class="article-title">Portfólio de produto: menos volume, mais raciocínio</h3>
+<p class="article-excerpt">Como apresentar contexto, problema, decisão e impacto sem depender apenas de telas finais.</p>
+<span class="article-link">Ler artigo <span>→</span></span>
+</a>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="footer">
+<div class="wrap-full">
+<div class="footer-inner">
+<div>
+<div class="footer-logo">Stephany <span>Palos</span></div>
+<div style="font-size:0.65rem; color:var(--text-muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase;">UX &amp; Product Design</div>
+</div>
+<div class="footer-copy">© 2026 Stephany Palos</div>
+</div>
+</div>
+</footer>
+<script>
     // Nav scroll
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
@@ -1299,6 +1249,5 @@
     );
     headings.forEach(h => headingObserver.observe(h));
   </script>
-
 </body>
 </html>
